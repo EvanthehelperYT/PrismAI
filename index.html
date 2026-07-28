@@ -13,8 +13,33 @@
 .gridbg{position:fixed;inset:0;pointer-events:none;opacity:.5;z-index:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:46px 46px;-webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000 18%,transparent 76%);mask-image:radial-gradient(ellipse at 50% 30%,#000 18%,transparent 76%)}
 .beam{position:fixed;height:18vmax;width:150vmax;filter:blur(80px);pointer-events:none;z-index:0;opacity:.16}.b1{background:linear-gradient(90deg,transparent,rgb(var(--accent-rgb)),transparent);top:-10%;left:-30%;transform:rotate(-15deg);animation:drift 24s ease-in-out infinite alternate;transition:background 1s}.b2{background:linear-gradient(90deg,transparent,#ff2d9b,transparent);bottom:2%;left:-25%;transform:rotate(11deg);animation:drift 32s ease-in-out infinite alternate-reverse}.b3{background:linear-gradient(90deg,transparent,#21d4fd,transparent);top:42%;left:-12%;transform:rotate(-3deg);animation:drift 40s ease-in-out infinite alternate}@keyframes drift{from{translate:0 0}to{translate:7vmax 4vmax}}
 .motes{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}.mote{position:absolute;border-radius:50%;animation:float var(--dur) ease-in-out infinite;animation-delay:var(--del);opacity:var(--o)}@keyframes float{0%,100%{transform:translate(0,0);opacity:var(--o)}50%{transform:translate(var(--dx),var(--dy));opacity:calc(var(--o)*2.2)}}
+
+/* LOADING OVERLAY */
+#model-loader{position:fixed;inset:0;background:rgba(7,6,12,.95);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;backdrop-filter:blur(12px);transition:opacity .6s cubic-bezier(.2,.9,.3,1)}#model-loader.hidden{opacity:0;pointer-events:none}
+.loader-glow{position:absolute;width:300px;height:100px;background:radial-gradient(ellipse,rgba(177,75,255,.15),transparent 70%);filter:blur(20px);pointer-events:none}
+.loader-bar{width:320px;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;position:relative}
+.loader-fill{height:100%;width:0%;background:var(--brand);background-size:200% 100%;animation:shimmer 2s linear infinite;border-radius:3px;transition:width .4s cubic-bezier(.2,.9,.3,1);box-shadow:0 0 12px rgba(33,212,253,.4)}
+.loader-text{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--dim);letter-spacing:.08em;text-align:center;min-height:20px;transition:opacity .3s}
+
+/* LOGO & BOOT */
 #boot{position:fixed;inset:0;background:var(--bg);z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;transition:opacity .7s}#boot.done{opacity:0;pointer-events:none}#boot .logo{transform:scale(1.5)}#bootlines{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);line-height:2.2;text-align:left;width:300px}#bootlines div{opacity:0;transform:translateY(6px);transition:.35s}#bootlines div.on{opacity:1;transform:none}#bootlines .ok{color:var(--accent)}#bootlines div:last-child.on::after{content:'▮';animation:blink 1s steps(1) infinite;color:var(--accent)}@keyframes blink{50%{opacity:0}}
-.logo{display:flex;align-items:center;gap:13px}.mark-wrap{position:relative;width:42px;height:42px;flex-shrink:0;perspective:600px;animation:bob 5.5s ease-in-out infinite}@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}.mark-ring{position:absolute;inset:-34%;border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(255,45,155,.6),transparent 38%,rgba(177,75,255,.5),transparent 64%,rgba(33,212,253,.6),transparent 90%);filter:blur(7px);opacity:.6;animation:spin 9s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.mark{position:relative;width:100%;height:100%;transform-style:preserve-3d;animation:turn 7s linear infinite;filter:drop-shadow(0 0 5px rgba(33,212,253,.55)) drop-shadow(0 0 9px rgba(255,45,155,.4))}@keyframes turn{from{transform:rotateY(0deg) rotateX(12deg)}to{transform:rotateY(360deg) rotateX(12deg)}}.mark svg{width:100%;height:100%;display:block}.wordmark{font-family:'Fredoka',sans-serif;font-weight:600;font-size:25px;letter-spacing:.01em;line-height:1;background:var(--brand);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 7s linear infinite}@keyframes shimmer{to{background-position:220% 0}}.wordmark-sub{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.34em;color:var(--dim2);margin-top:4px}
+.logo{display:flex;align-items:center;gap:14px;z-index:2}
+.mark-wrap{position:relative;width:48px;height:48px;flex-shrink:0;perspective:800px}
+.mark-ring{position:absolute;inset:-40%;border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(255,45,155,.5),transparent 38%,rgba(177,75,255,.4),transparent 64%,rgba(33,212,253,.5),transparent 90%);filter:blur(8px);opacity:.5;animation:spin 12s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mark{position:relative;width:100%;height:100%;transform-style:preserve-3d;animation:gyrate 8s linear infinite;filter:drop-shadow(0 0 6px rgba(33,212,253,.6)) drop-shadow(0 0 12px rgba(255,45,155,.4))}
+@keyframes gyrate{
+  0%{transform:rotateY(0deg) rotateX(15deg) rotateZ(0deg)}
+  25%{transform:rotateY(90deg) rotateX(25deg) rotateZ(10deg)}
+  50%{transform:rotateY(180deg) rotateX(15deg) rotateZ(0deg)}
+  75%{transform:rotateY(270deg) rotateX(5deg) rotateZ(-10deg)}
+  100%{transform:rotateY(360deg) rotateX(15deg) rotateZ(0deg)}
+}
+.mark svg{width:100%;height:100%;display:block}
+.wordmark{font-family:'Fredoka',sans-serif;font-weight:600;font-size:28px;letter-spacing:.01em;line-height:1;background:linear-gradient(95deg,#21d4fd 0%,#b14bff 50%,#ff2d9b 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 7s linear infinite}
+@keyframes shimmer{to{background-position:220% 0}}
+.wordmark-sub{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.34em;color:var(--dim2);margin-top:5px}
+
 .app{display:flex;height:100vh;position:relative;z-index:3}.rail{width:262px;flex-shrink:0;display:flex;flex-direction:column;padding:20px 14px 16px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.008));backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-right:1px solid var(--line)}.brand{padding:2px 8px 20px}.rail-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.3em;color:var(--dim2);padding:12px 10px 8px}
 .facet{display:flex;align-items:center;gap:11px;width:100%;padding:9px 10px;border:0;background:transparent;color:var(--text);font-family:'Manrope',sans-serif;cursor:pointer;border-radius:10px;position:relative;transition:background .2s,transform .2s;text-align:left}.facet::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:2.5px;border-radius:3px;background:var(--fc);opacity:0;transition:.25s}.facet:hover{background:rgba(255,255,255,.05);transform:translateX(3px)}.facet .fg{width:31px;height:31px;flex-shrink:0;display:grid;place-items:center;border:1px solid var(--line2);border-radius:8px;font-size:14px;color:var(--fc);transition:.3s}.facet b{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;letter-spacing:.06em;display:block}.facet i{font-style:normal;font-size:10px;color:var(--dim);display:block;margin-top:1px}.facet.active{background:color-mix(in srgb,var(--fc) 12%,transparent)}.facet.active::before{opacity:1;box-shadow:0 0 10px var(--fc)}.facet.active .fg{border-color:var(--fc);box-shadow:0 0 14px color-mix(in srgb,var(--fc) 45%,transparent)}.facet.active b{color:#fff}
 .shortcut{display:block;width:100%;padding:7px 10px;background:transparent;border:0;color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:11px;text-align:left;cursor:pointer;border-radius:7px;transition:.18s}.shortcut:hover{color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,transparent);transform:translateX(3px)}
@@ -30,8 +55,6 @@
 .composer{display:flex;gap:12px;padding:14px 28px 22px;align-items:flex-end}.composer-inner{flex:1;display:flex;align-items:flex-end;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid var(--line2);border-radius:15px;padding:6px 6px 6px 18px;transition:border-color .25s,box-shadow .25s}.composer-inner:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent)}.composer.shake .composer-inner{animation:shake .35s}@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}#inp{flex:1;background:transparent;border:0;outline:0;resize:none;color:var(--text);font-family:'Manrope',sans-serif;font-size:14.5px;line-height:1.5;max-height:120px;padding:8px 0}#inp::placeholder{color:var(--dim2)}#sendBtn{width:44px;height:44px;flex-shrink:0;border:0;border-radius:11px;background:var(--brand);background-size:180% 100%;color:#fff;cursor:pointer;display:grid;place-items:center;transition:.22s;animation:shimmer 7s linear infinite}#sendBtn:hover{box-shadow:0 0 24px rgba(255,45,155,.5),0 0 24px rgba(33,212,253,.4);transform:translateY(-2px)}#sendBtn:active{transform:scale(.9)}
 @media(max-width:880px){.app{flex-direction:column}.rail{width:100%;flex-direction:row;align-items:center;border-right:0;border-bottom:1px solid var(--line);padding:10px 12px;gap:6px;overflow-x:auto}.brand{padding:0 6px 0 0}.brand .wordmark{font-size:20px}.wordmark-sub,.rail-label,.shortcuts,.rail-foot{display:none}.facet{width:auto;flex-shrink:0}.facet i{display:none}.facet::before{display:none}.facet.active{box-shadow:inset 0 -2px 0 var(--fc)}.bubble{max-width:88%}.sys span.hideS{display:none}.mark-wrap{width:34px;height:34px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-/* Loading overlay for model init */
-#model-loader{position:fixed;inset:0;background:rgba(7,6,12,.92);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;backdrop-filter:blur(8px)}#model-loader.hidden{opacity:0;pointer-events:none;transition:opacity .5s}.loader-bar{width:280px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden}.loader-fill{height:100%;width:0%;background:var(--brand);background-size:200% 100%;animation:shimmer 2s linear infinite;border-radius:3px;transition:width .3s}.loader-text{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);letter-spacing:.1em}
 </style>
 </head>
 <body>
@@ -40,9 +63,10 @@
 
 <!-- MODEL LOADING OVERLAY -->
 <div id="model-loader">
+  <div class="loader-glow"></div>
   <div class="logo"><div class="mark-wrap"><div class="mark-ring"></div><div class="mark"><svg viewBox="0 0 48 48" fill="none"><path d="M11 7 L11 41 L41 24 Z" stroke="url(#gOuter)" stroke-width="2.4" stroke-linejoin="round"/><path d="M19 24 L11 7 M19 24 L11 41 M19 24 L41 24" stroke="url(#gInner)" stroke-width="2" stroke-linecap="round"/></svg></div></div><div class="wordmark">Prism</div></div>
   <div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
-  <div class="loader-text" id="loaderText">Initializing neural optics...</div>
+  <div class="loader-text" id="loaderText">Initializing...</div>
 </div>
 
 <div id="boot"><div class="logo"><div class="mark-wrap"><div class="mark-ring"></div><div class="mark"><svg viewBox="0 0 48 48" fill="none"><path d="M11 7 L11 41 L41 24 Z" stroke="url(#gOuter)" stroke-width="2.4" stroke-linejoin="round"/><path d="M19 24 L11 7 M19 24 L11 41 M19 24 L41 24" stroke="url(#gInner)" stroke-width="2" stroke-linecap="round"/></svg></div></div><div class="wordmark">Prism</div></div><div id="bootlines"><div>&gt; aligning optics .............. <span class="ok">ok</span></div><div>&gt; calibrating spectrum ......... <span class="ok">5 facets refracted</span></div><div>&gt; loading persona matrix ....... <span class="ok">CORE ▮</span></div><div>&gt; Prism v1.0 — <span class="ok">online</span></div></div></div>
@@ -69,7 +93,6 @@
 // ==========================================
 import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/+esm';
 
-// Configure Transformers.js to load from HF CDN
 env.allowRemoteModels = true;
 env.remoteHost = 'https://huggingface.co';
 env.remotePathTemplate = '{model}/resolve/main/{file}';
@@ -80,7 +103,6 @@ const MODEL_FILE = 'prism-moe-q4_k_m.gguf';
 let generator = null;
 let modelReady = false;
 
-// System prompts for each facet
 const SYSTEM_PROMPTS = {
   dev: "You are Prism Dev, the Coding Agent. Output clean, production-ready code with error handling. Infer missing constraints. Never add conversational filler unless asked.",
   reflex: "You are Prism Reflex, the Chat Agent. Quick, adaptive, responsive. Match user energy. Be concise when brief, expansive when detailed.",
@@ -88,14 +110,22 @@ const SYSTEM_PROMPTS = {
   spectrum: "You are Prism Spectrum, the Design Agent. Think in composition, color theory, typography. Describe visuals precisely."
 };
 
-// Initialize model with progress tracking
+const HUMAN_MESSAGES = [
+  "Warming up the neural optics...",
+  "Calibrating the spectrum...",
+  "Polishing the facets...",
+  "Aligning the light beams...",
+  "Almost there, just focusing...",
+  "Ready to shine!"
+];
+
 async function initModel() {
   const loader = document.getElementById('model-loader');
   const fill = document.getElementById('loaderFill');
   const text = document.getElementById('loaderText');
   
   try {
-    text.textContent = 'Downloading Prism MoE brain (2GB)...';
+    text.textContent = HUMAN_MESSAGES[0];
     
     generator = await pipeline('text-generation', `${MODEL_ID}/${MODEL_FILE}`, {
       quantized: true,
@@ -104,16 +134,19 @@ async function initModel() {
         if (data.status === 'progress') {
           const pct = Math.round((data.loaded / data.total) * 100);
           fill.style.width = `${pct}%`;
-          text.textContent = `Loading Prism MoE... ${pct}%`;
+          
+          // Update text based on progress percentage
+          const msgIndex = Math.min(Math.floor(pct / 20), HUMAN_MESSAGES.length - 1);
+          text.textContent = HUMAN_MESSAGES[msgIndex];
         } else if (data.status === 'done') {
-          text.textContent = 'Compiling shaders...';
+          text.textContent = HUMAN_MESSAGES[HUMAN_MESSAGES.length - 1];
           fill.style.width = '100%';
         }
       }
     });
     
     modelReady = true;
-    setTimeout(() => loader.classList.add('hidden'), 500);
+    setTimeout(() => loader.classList.add('hidden'), 800);
     console.log('✅ Prism MoE loaded successfully');
   } catch (err) {
     text.textContent = 'WebGPU not supported. Falling back to CPU...';
@@ -125,12 +158,13 @@ async function initModel() {
           if (data.status === 'progress') {
             const pct = Math.round((data.loaded / data.total) * 100);
             fill.style.width = `${pct}%`;
-            text.textContent = `Loading (CPU mode)... ${pct}%`;
+            const msgIndex = Math.min(Math.floor(pct / 20), HUMAN_MESSAGES.length - 1);
+            text.textContent = HUMAN_MESSAGES[msgIndex];
           }
         }
       });
       modelReady = true;
-      setTimeout(() => loader.classList.add('hidden'), 500);
+      setTimeout(() => loader.classList.add('hidden'), 800);
     } catch (cpuErr) {
       text.textContent = 'Failed to load model. Please use Chrome/Edge.';
       console.error('Model load failed:', cpuErr);
@@ -138,124 +172,8 @@ async function initModel() {
   }
 }
 
-// Generate response with persona routing
 async function generateResponse(message, persona = 'dev') {
-  if (!modelReady || !generator) return 'Prism brain still loading... please wait.';
+  if (!modelReady || !generator) return 'Prism brain still warming up... please wait.';
   
   const systemPrompt = SYSTEM_PROMPTS[persona] || SYSTEM_PROMPTS.dev;
-  const formattedPrompt = `<|im_start|>system\n${systemPrompt}<|im_end|>\n<|im_start|>user\n${message}<|im_end|>\n<|im_start|>assistant\n`;
-  
-  try {
-    const output = await generator(formattedPrompt, {
-      max_new_tokens: 256,
-      temperature: 0.7,
-      do_sample: true,
-      top_p: 0.9
-    });
-    
-    // Extract assistant response from generated text
-    const fullText = output[0].generated_text;
-    const assistantResponse = fullText.split('<|im_start|>assistant\n').pop()?.trim() || fullText;
-    
-    return assistantResponse;
-  } catch (err) {
-    console.error('Generation error:', err);
-    return '⚠️ Generation failed. Try again or switch personas.';
-  }
-}
-
-// Expose to global scope for UI integration
-window.prismGenerate = generateResponse;
-window.isModelReady = () => modelReady;
-
-// Start initialization
-initModel();
-</script>
-
-<script>
-// ==========================================
-// UI LOGIC (UNCHANGED FROM ORIGINAL)
-// ==========================================
-const PERSONAS = {
-  core:{name:'CORE',glyph:'◆',color:'#5eead4',rgb:'94,234,212',tag:'balanced intellect'},
-  dev:{name:'DEV',glyph:'⚒',color:'#ffa657',rgb:'255,166,87',tag:'code engine'},
-  reflex:{name:'REFLEX',glyph:'✦',color:'#7dd3fc',rgb:'125,211,252',tag:'companion'},
-  focus:{name:'FOCUS',glyph:'▲',color:'#a3e635',rgb:'163,230,53',tag:'ops & tasks'},
-  spectrum:{name:'SPECTRUM',glyph:'',color:'#f0abfc',rgb:'240,171,252',tag:'wildcard'}
-};
-let current='core';
-
-const $=s=>document.querySelector(s);
-const chat=$('#chat'), inp=$('#inp');
-const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const now=()=>new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-
-function highlight(code){
-  return esc(code).replace(/(\/\/[^\n]*|#[^\n]*)|("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`)|\b(const|let|var|function|return|if|else|for|while|import|from|def|class|print|async|await|new|export|default|try|except|catch|yield|in|of|None|True|False|null|undefined)\b|\b(\d+(?:\.\d+)?)\b/g,(m,c,s,k,n)=> c?`<span class="tk-c">${c}</span>` : s?`<span class="tk-s">${s}</span>` : k?`<span class="tk-k">${k}</span>` : n?`<span class="tk-n">${n}</span>` : m);
-}
-
-function sysline(text,acc){chat.insertAdjacentHTML('beforeend',`<div class="sysline${acc?' acc':''}">${text}</div>`);scrollDown();}
-function pushUser(text){chat.insertAdjacentHTML('beforeend',`<div class="msg user"><div class="bubble"><div class="meta">YOU · ${now()}</div>${esc(text).replace(/\n/g,'<br>')}</div></div>`);scrollDown();}
-function pushAI(html){const p=PERSONAS[current];chat.insertAdjacentHTML('beforeend',`<div class="msg ai"><div class="avatar" style="border-color:${p.color};color:${p.color};background:color-mix(in srgb,${p.color} 8%,transparent)">${p.glyph}</div><div class="bubble"><div class="meta"><b style="color:${p.color}">${p.name}</b> · ${now()}</div>${html}</div></div>`);scrollDown();}
-let typingEl=null;
-function showTyping(){const p=PERSONAS[current];chat.insertAdjacentHTML('beforeend',`<div class="msg ai" id="typing"><div class="avatar" style="border-color:${p.color};color:${p.color};background:color-mix(in srgb,${p.color} 8%,transparent)">${p.glyph}</div><div class="bubble"><div class="dots"><span></span><span></span><span></span></div></div></div>`);typingEl=$('#typing');scrollDown();}
-function hideTyping(){if(typingEl){typingEl.remove();typingEl=null;}}
-function scrollDown(){const c=$('.chat');c.scrollTop=c.scrollHeight;}
-
-// Wire up facets
-const facetsBox=$('#facets');
-Object.entries(PERSONAS).forEach(([k,p])=>{
-  const b=document.createElement('button');
-  b.className='facet'+(k===current?' active':'');
-  b.dataset.p=k;b.style.setProperty('--fc',p.color);
-  b.innerHTML=`<span class="fg" style="color:${p.color}">${p.glyph}</span><span><b>${p.name}</b><i>${p.tag}</i></span>`;
-  b.onclick=()=>{
-    current=k;
-    $('#crumbPersona').textContent=p.name;
-    inp.placeholder=`Message ${p.name} — code, tasks, anything…`;
-    document.documentElement.style.setProperty('--accent',p.color);
-    document.documentElement.style.setProperty('--accent-rgb',p.rgb);
-    document.querySelectorAll('.facet').forEach(f=>f.classList.toggle('active',f.dataset.p===k));
-    sysline(`◇ FACET SWITCHED — ${p.name} ONLINE`,true);
-  };
-  facetsBox.appendChild(b);
-});
-
-// Handle send
-async function send(text){
-  text=(text||inp.value).trim();
-  if(!text){const c=$('#composer');c.classList.add('shake');setTimeout(()=>c.classList.remove('shake'),400);return;}
-  inp.value='';inp.style.height='auto';
-  pushUser(text);
-  showTyping();
-  
-  // Use browser-native generation
-  const reply = await window.prismGenerate(text, current);
-  
-  hideTyping();
-  pushAI(`<p>${esc(reply).replace(/\n/g,'<br>')}</p>`);
-  $('#lat').textContent=(Math.random()*50+10|0)+'ms';
-}
-
-$('#sendBtn').onclick=()=>send();
-inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
-inp.addEventListener('input',()=>{inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,120)+'px';});
-
-// Shortcuts & chips
-document.querySelectorAll('.shortcut').forEach(b=>b.onclick=()=>send(b.dataset.cmd));
-document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>send(b.textContent.replace(/^[^\s]+\s/,'')));
-
-// Boot sequence
-const lines=[...document.querySelectorAll('#bootlines div')];
-lines.forEach((l,i)=>setTimeout(()=>l.classList.add('on'),300+i*420));
-setTimeout(()=>{$('#boot').classList.add('done');setTimeout(()=>$('#boot').remove(),700);},300+lines.length*420+500);
-
-// Clock & session
-$('#sess').textContent=Math.random().toString(16).slice(2,8).toUpperCase();
-setInterval(()=>{$('#clk').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});},1000);
-
-// Floating motes
-(function(){const m=$('#motes');for(let i=0;i<25;i++){const d=document.createElement('div');d.className='mote';d.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${2+Math.random()*3}px;height:${2+Math.random()*3}px;background:rgba(255,255,255,${.05+Math.random()*.1});--dur:${8+Math.random()*12}s;--del:${Math.random()*5}s;--dx:${-20+Math.random()*40}px;--dy:${-20+Math.random()*40}px;--o:${.3+Math.random()*.4}`;m.appendChild(d);}})();
-</script>
-</body>
-</html>
+  const formattedPrompt = `
