@@ -1,1 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prism</title>
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- FontAwesome & Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
 
+        :root {
+            --bg-black: #000000;
+            --card-bg: rgba(12, 12, 18, 0.85);
+            --card-border: rgba(0, 243, 255, 0.2);
+            --cyber-blue: #00f3ff;
+            --cyber-purple: #9d00ff;
+            --cyber-green: #00ff66;
+            --text-main: #f0f6fc;
+            --text-sub: #8b949e;
+            --rainbow: linear-gradient(135deg, #ff0055, #9d00ff, #00f3ff, #00ff66, #ff0055);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 20%, rgba(0, 243, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(157, 0, 255, 0.06) 0%, transparent 40%),
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 50px 50px, 50px 50px;
+        }
+
+        /* Animations */
+        @keyframes rainbowFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes prismSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes pulseDot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.5; }
+        }
+
+        .neon-border {
+            position: relative;
+            border-radius: 20px;
+            background: var(--rainbow);
+            background-size: 300% 300%;
+            animation: rainbowFlow 6s linear infinite;
+            padding: 1.5px;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
+            transition: box-shadow 0.3s;
+            z-index: 100;
+        }
+
+        .glass-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 19px;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 40px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 150;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .prism-logo {
+            width: 36px;
+            height: 36px;
+            animation: prismSpin 14s linear infinite;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            background: var(--rainbow);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbowFlow 4s linear infinite;
+            letter-spacing: 2px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+        }
+
+        .icon-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--cyber-blue);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .icon-btn:hover {
+            background: rgba(0, 243, 255, 0.15);
+            color: #fff;
+            border-color: var(--cyber-blue);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .profile-img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--cyber-blue);
+            cursor: pointer;
+            object-fit: cover;
+            transition: 0.3s;
+        }
+
+        /* Dropdowns */
+        .dropdown {
+            position: absolute;
+            top: 55px;
+            right: 0;
+            background: rgba(10, 10, 15, 0.96);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            width: 350px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 243, 255, 0.2);
+            z-index: 200;
+            padding: 20px;
+            backdrop-filter: blur(25px);
+        }
+        .dropdown.active { display: flex; }
+
+        .apps-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .apps-header-bar span {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: var(--cyber-blue);
+        }
+        .add-app-btn {
+            background: rgba(0, 243, 255, 0.15);
+            border: 1px solid var(--cyber-blue);
+            color: var(--cyber-blue);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            text-align: center;
+            max-height: 280px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .app-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 8px;
+            border-radius: 12px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: 0.2s;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid transparent;
+            position: relative;
+        }
+        .app-item:hover {
+            background: rgba(0, 243, 255, 0.1);
+            border-color: var(--cyber-blue);
+            transform: translateY(-2px);
+        }
+        .app-item-actions {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            display: none;
+            gap: 2px;
+        }
+        .app-item:hover .app-item-actions { display: flex; }
+        .app-action-btn {
+            background: #000;
+            color: #fff;
+            border: 1px solid var(--cyber-blue);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .account-header { text-align: center; padding-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+
+        .btn-signout {
+            padding: 8px 18px;
+            background: rgba(255, 0, 85, 0.15);
+            border: 1px solid #ff0055;
+            color: #ff4d7d;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Main Section */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 85px);
+            padding: 40px 20px;
+            transition: margin-right 0.3s ease;
+        }
+
+        /* Search Bar & Custom Engine Selector */
+        .search-container {
+            display: flex;
+            align-items: center;
+            padding: 6px 18px;
+            position: relative;
+        }
+
+        .engine-selector-wrapper { position: relative; margin-right: 12px; }
+
+        .engine-btn {
+            background: rgba(0, 243, 255, 0.08);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            color: var(--cyber-blue);
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .engine-dropdown-menu {
+            position: absolute;
+            top: 48px;
+            left: 0;
+            width: 260px;
+            max-height: 320px;
+            background: rgba(8, 8, 14, 0.98);
+            border: 1px solid var(--cyber-blue);
+            border-radius: 14px;
+            padding: 12px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 999;
+            backdrop-filter: blur(20px);
+        }
+        .engine-dropdown-menu.active { display: flex; }
+
+        .engine-filter-input {
+            width: 100%;
+            padding: 8px 12px;
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 8px;
+            outline: none;
+            font-size: 0.85rem;
+        }
+
+        .engine-list {
+            overflow-y: auto;
+            max-height: 240px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .engine-item {
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            color: var(--text-main);
+        }
+        .engine-item:hover { background: rgba(0, 243, 255, 0.15); color: #fff; }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.15rem;
+            padding: 14px 10px;
+            outline: none;
+        }
+
+        .search-actions { display: flex; gap: 10px; align-items: center; }
+        #searchFileInput { display: none !important; }
+
+        /* Shortcuts */
+        .shortcuts-container {
+            margin-top: 50px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 22px;
+            width: 100%;
+            max-width: 850px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .shortcut {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 115px;
+            height: 120px;
+            background: rgba(15, 15, 22, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 15px 12px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            backdrop-filter: blur(12px);
+        }
+        .shortcut:hover {
+            border-color: var(--cyber-blue);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.25);
+            transform: translateY(-6px);
+        }
+        .shortcut img { width: 40px; height: 40px; margin-bottom: 12px; border-radius: 10px; }
+        .shortcut span { font-size: 0.85rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; text-align: center; }
+
+        .shortcut-actions { position: absolute; top: -6px; right: -6px; display: none; gap: 4px; }
+        .shortcut:hover .shortcut-actions { display: flex; }
+        .s-btn { background: #0a0a0f; color: #fff; border: 1px solid var(--cyber-blue); border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 10px; display: flex; align-items: center; justify-content: center; }
+
+        .add-shortcut { border: 1px dashed var(--cyber-blue); justify-content: center; font-size: 1.8rem; color: var(--cyber-blue); }
+
+        /* AI Sidebar */
+        .ai-sidebar {
+            position: fixed; top: 0; right: -450px; width: 450px; height: 100vh;
+            background: rgba(4, 4, 8, 0.98); backdrop-filter: blur(30px);
+            border-left: 1px solid rgba(0, 243, 255, 0.25);
+            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex; flex-direction: column; z-index: 1000;
+            box-shadow: -15px 0 50px rgba(0,0,0,0.95);
+        }
+        .ai-sidebar.open { right: 0; }
+
+        .ai-sidebar-top { padding: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); background: rgba(10, 10, 18, 0.8); }
+        .ai-status-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .status-tag { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--cyber-green); }
+        .status-dot { width: 8px; height: 8px; background: var(--cyber-green); border-radius: 50%; animation: pulseDot 2s infinite; }
+
+        .ai-title-row { display: flex; justify-content: space-between; align-items: center; }
+        .ai-title-row h2 { font-family: 'Orbitron', sans-serif; color: #fff; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+        .ai-model-select { background: #000; color: var(--cyber-blue); border: 1px solid var(--cyber-blue); padding: 8px 14px; border-radius: 10px; outline: none; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+
+        .quick-chips { display: flex; gap: 8px; padding: 12px 20px; overflow-x: auto; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .chip { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-sub); padding: 6px 12px; border-radius: 20px; font-size: 0.78rem; white-space: nowrap; cursor: pointer; }
+
+        .ai-chat { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; }
+        .chat-bubble-wrapper { display: flex; gap: 12px; align-items: flex-start; max-width: 90%; }
+        .chat-bubble-wrapper.user { align-self: flex-end; flex-direction: row-reverse; }
+        .msg-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+        .user .msg-avatar { background: var(--cyber-purple); color: white; }
+        .ai .msg-avatar { background: var(--cyber-blue); color: black; font-weight: bold; }
+
+        .chat-msg { padding: 14px 18px; border-radius: 16px; line-height: 1.5; font-size: 0.92rem; word-wrap: break-word; }
+        .user .chat-msg { background: linear-gradient(135deg, rgba(157, 0, 255, 0.25), rgba(0, 243, 255, 0.15)); border: 1px solid rgba(157, 0, 255, 0.4); color: #fff; }
+        .ai .chat-msg { background: rgba(20, 20, 30, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); color: #e0e6ed; }
+
+        .ai-input-wrapper { padding: 18px; border-top: 1px solid rgba(255, 255, 255, 0.08); background: rgba(8, 8, 14, 0.9); }
+        .ai-input-box { display: flex; align-items: center; background: #000; border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 14px; padding: 4px 8px 4px 14px; }
+        .ai-input-box input[type="text"] { flex: 1; background: transparent; border: none; color: white; padding: 12px 8px; outline: none; font-size: 0.95rem; }
+
+        /* Spotify Widget */
+        .spotify-widget { position: fixed; bottom: 30px; left: 30px; width: 340px; z-index: 998; display: none; }
+        .spotify-widget.active { display: block; }
+
+        /* Game Modal */
+        .game-modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.98); z-index: 3000; flex-direction: column; }
+        .game-header { padding: 12px 24px; background: #0a0a0f; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--cyber-blue); }
+        .game-iframe { width: 100%; height: 100%; border: none; background: #000; }
+
+        .ai-toggle-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: #050508; border: 1px solid var(--cyber-blue); cursor: pointer; font-size: 1.5rem; z-index: 999; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 20px rgba(0, 243, 255, 0.3); }
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: #0a0a0f; padding: 30px; border-radius: 16px; border: 1px solid var(--cyber-blue); width: 320px; display: flex; flex-direction: column; gap: 15px; }
+        .modal input { padding: 12px; background: #000; border: 1px solid rgba(255, 255, 255, 0.2); color: white; outline: none; border-radius: 8px; }
+        .modal button { padding: 12px; background: var(--cyber-blue); color: #000; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; }
+
+        .btn-demo-auth { background: rgba(0, 243, 255, 0.1); border: 1px solid var(--cyber-blue); color: var(--cyber-blue); padding: 8px 14px; border-radius: 8px; cursor: pointer; margin-top: 10px; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo-container">
+            <svg class="prism-logo" viewBox="0 0 100 100">
+                <defs>
+                    <linearGradient id="prismGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#ff0055" />
+                        <stop offset="50%" style="stop-color:#00f3ff" />
+                        <stop offset="100%" style="stop-color:#9d00ff" />
+                    </linearGradient>
+                </defs>
+                <polygon points="50,5 95,85 5,85" fill="none" stroke="url(#prismGrad)" stroke-width="6"/>
+                <polygon points="50,22 78,74 22,74" fill="none" stroke="url(#prismGrad)" stroke-width="3"/>
+                <line x1="50" y1="5" x2="50" y2="48" stroke="var(--cyber-blue)" stroke-width="2"/>
+                <line x1="5" y1="85" x2="50" y2="48" stroke="var(--cyber-blue)" stroke-width="2"/>
+                <line x1="95" y1="85" x2="50" y2="48" stroke="var(--cyber-blue)" stroke-width="2"/>
+            </svg>
+            <h1>Prism</h1>
+        </div>
+
+        <div class="nav-right">
+            <button class="icon-btn" onclick="openGameModal()" title="Play Bloxd.io"><i class="fas fa-gamepad"></i></button>
+            <button class="icon-btn" onclick="toggleSpotifyWidget()" title="Spotify Music"><i class="fas fa-music"></i></button>
+            <button class="icon-btn" id="appsBtn" title="Google Apps"><i class="fas fa-th"></i></button>
+            <img src="https://ui-avatars.com/api/?name=Guest&background=111&color=00f3ff" alt="Profile" class="profile-img" id="navProfileImg">
+
+            <!-- Google Apps Dropdown with Full Edit/Add/Delete Functionality -->
+            <div class="dropdown" id="appsDropdown">
+                <div class="apps-header-bar">
+                    <span>Apps & Links</span>
+                    <button class="add-app-btn" onclick="openAppModal()"><i class="fas fa-plus"></i> Add New</button>
+                </div>
+                <div class="apps-grid" id="appsGrid">
+                    <!-- Dynamic Google Apps Rendered Here -->
+                </div>
+            </div>
+
+            <!-- Google Account Dropdown -->
+            <div class="dropdown" id="accountDropdown">
+                <div class="account-header">
+                    <img src="https://ui-avatars.com/api/?name=Guest&background=111&color=00f3ff" alt="Profile" id="dropdownProfileImg" style="width: 65px; height: 65px; border-radius: 50%; border: 2px solid var(--cyber-blue);">
+                    <h3 id="profileName">Guest User</h3>
+                    <p id="profileEmail">Not signed in</p>
+                    
+                    <div id="signedInView" style="display: none;">
+                        <button class="btn-signout" onclick="signOut()"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+                    </div>
+
+                    <div id="signedOutView" style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 10px;">
+                        <div id="googleSignInBtn"></div>
+                        <button class="btn-demo-auth" onclick="demoLogin()"><i class="fab fa-google"></i> Quick Demo Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container" id="mainContainer">
+        <!-- Search Bar -->
+        <div class="neon-border" style="width: 100%; max-width: 720px;">
+            <div class="glass-panel search-container">
+                <div class="engine-selector-wrapper">
+                    <button class="engine-btn" id="engineSelectBtn" onclick="toggleEngineMenu(event)">
+                        <span id="selectedEngineName">Google</span>
+                        <i class="fas fa-chevron-down" style="font-size: 0.75rem;"></i>
+                    </button>
+                    <div class="engine-dropdown-menu" id="engineDropdownMenu">
+                        <input type="text" class="engine-filter-input" id="engineSearchInput" placeholder="Filter engines..." oninput="filterEngines()">
+                        <div class="engine-list" id="engineList"></div>
+                    </div>
+                </div>
+
+                <input type="text" class="search-input" id="searchInput" placeholder="Search the web..." autofocus>
+                <div class="search-actions">
+                    <button class="icon-btn" onclick="startDictation('searchInput')" title="Voice Search"><i class="fas fa-microphone"></i></button>
+                    <button class="icon-btn" onclick="document.getElementById('searchFileInput').click()" title="Image Search"><i class="fas fa-camera"></i></button>
+                    <input type="file" id="searchFileInput" accept="image/*">
+                </div>
+            </div>
+        </div>
+
+        <!-- Centered Shortcuts Grid -->
+        <div class="shortcuts-container" id="shortcutsGrid"></div>
+    </div>
+
+    <!-- Floating Spotify Widget -->
+    <div class="spotify-widget neon-border" id="spotifyWidget">
+        <div class="glass-panel" style="padding: 10px;">
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/6pEAr2mb7yTC9Z7VEl0moQ?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
+    </div>
+
+    <!-- Bloxd.io Game Modal -->
+    <div class="game-modal" id="gameModal">
+        <div class="game-header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-cubes" style="color: var(--cyber-blue); font-size: 1.2rem;"></i>
+                <span style="font-family: 'Orbitron', sans-serif; font-weight: bold; color: white;">Bloxd.io</span>
+            </div>
+            <button class="icon-btn" onclick="closeGameModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="gameIframeContainer" style="flex: 1; width: 100%; height: 100%;"></div>
+    </div>
+
+    <!-- AI Toggle Floating Button -->
+    <div class="neon-border" style="position: fixed; bottom: 30px; right: 30px; padding: 1.5px; border-radius: 50%; z-index: 1001;">
+        <button class="ai-toggle-btn" onclick="toggleAI()" title="Toggle Prism AI">
+            <i class="fas fa-brain" style="color: var(--cyber-blue);"></i>
+        </button>
+    </div>
+
+    <!-- AI Sidebar -->
+    <div class="ai-sidebar" id="aiSidebar">
+        <div class="ai-sidebar-top">
+            <div class="ai-status-bar">
+                <div class="status-tag">
+                    <div class="status-dot"></div>
+                    <span>SYSTEM ONLINE</span>
+                </div>
+                <button class="icon-btn" style="width:30px; height:30px; font-size:0.9rem;" onclick="toggleAI()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="ai-title-row">
+                <h2><i class="fas fa-brain"></i> Prism AI</h2>
+                <select class="ai-model-select" id="aiModelSelect">
+                    <option value="openai">GPT 5.5</option>
+                    <option value="qwen">Claude Fable 5</option>
+                    <option value="mistral">Gemini 3.5 Pro</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="quick-chips">
+            <div class="chip" onclick="quickPrompt('Summarize tech news')">⚡ Summarize</div>
+            <div class="chip" onclick="quickPrompt('Write a Python web scraper')">💻 Write Code</div>
+            <div class="chip" onclick="quickPrompt('Creative ideas for a website')">🧠 Ideas</div>
+        </div>
+
+        <div class="ai-chat" id="aiChatBox">
+            <div class="chat-bubble-wrapper ai">
+                <div class="msg-avatar">AI</div>
+                <div class="chat-msg">Prism AI system initialized. Ready for query.</div>
+            </div>
+        </div>
+
+        <div class="ai-input-wrapper">
+            <div class="ai-input-box">
+                <button class="icon-btn" style="border:none; background:transparent; width:30px;" onclick="document.getElementById('aiFileInput').click()"><i class="fas fa-paperclip"></i></button>
+                <input type="file" id="aiFileInput">
+                <button class="icon-btn" style="border:none; background:transparent; width:30px;" onclick="startDictation('aiInput')"><i class="fas fa-microphone"></i></button>
+                <input type="text" id="aiInput" placeholder="Ask Prism AI...">
+                <button class="icon-btn" style="border:none; background:var(--cyber-blue); color:#000; width:36px; height:36px;" onclick="sendAIMessage()"><i class="fas fa-arrow-up"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shortcut Modal -->
+    <div class="modal" id="shortcutModal">
+        <div class="modal-content">
+            <h3 style="color: var(--cyber-blue);" id="modalTitle">Add Shortcut</h3>
+            <input type="hidden" id="editIndex" value="-1">
+            <input type="text" id="scName" placeholder="Name (e.g. GitHub)">
+            <input type="text" id="scUrl" placeholder="URL (e.g. https://github.com)">
+            <button onclick="saveShortcut()">Save</button>
+            <button onclick="closeModal('shortcutModal')" style="background: transparent; color: #888; border: 1px solid #333;">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Google Apps CRUD Modal -->
+    <div class="modal" id="appModal">
+        <div class="modal-content">
+            <h3 style="color: var(--cyber-blue);" id="appModalTitle">Add App Link</h3>
+            <input type="hidden" id="editAppIndex" value="-1">
+            <input type="text" id="appName" placeholder="App Name (e.g. Discord)">
+            <input type="text" id="appUrl" placeholder="URL (e.g. https://discord.com)">
+            <input type="text" id="appIcon" placeholder="FontAwesome Icon (e.g. fab fa-discord)">
+            <button onclick="saveApp()">Save App</button>
+            <button onclick="closeModal('appModal')" style="background: transparent; color: #888; border: 1px solid #333;">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        /* --- Google Apps CRUD State --- */
+        let googleApps = JSON.parse(localStorage.getItem('prismGoogleApps')) || [
+            { name: 'Search', url: 'https://google.com', icon: 'fab fa-google', color: '#4285F4' },
+            { name: 'Gmail', url: 'https://mail.google.com', icon: 'fas fa-envelope', color: '#EA4335' },
+            { name: 'Maps', url: 'https://maps.google.com', icon: 'fas fa-map-marked-alt', color: '#34A853' },
+            { name: 'YouTube', url: 'https://youtube.com', icon: 'fab fa-youtube', color: '#FF0000' },
+            { name: 'Drive', url: 'https://drive.google.com', icon: 'fas fa-hdd', color: '#FFBA00' },
+            { name: 'Calendar', url: 'https://calendar.google.com', icon: 'fas fa-calendar-alt', color: '#4285F4' },
+            { name: 'Docs', url: 'https://docs.google.com', icon: 'fas fa-file-word', color: '#4285F4' },
+            { name: 'Photos', url: 'https://photos.google.com', icon: 'fas fa-file-image', color: '#EA4335' },
+            { name: 'Play', url: 'https://play.google.com', icon: 'fab fa-google-play', color: '#34A853' }
+        ];
+
+        function renderGoogleApps() {
+            const grid = document.getElementById('appsGrid');
+            grid.innerHTML = '';
+            googleApps.forEach((app, idx) => {
+                const a = document.createElement('a');
+                a.href = app.url;
+                a.className = 'app-item';
+                a.innerHTML = `
+                    <div class="app-item-actions">
+                        <button class="app-action-btn" onclick="editApp(event, ${idx})"><i class="fas fa-pen"></i></button>
+                        <button class="app-action-btn" onclick="deleteApp(event, ${idx})"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <i class="${app.icon || 'fas fa-link'} fa-2x" style="color: ${app.color || '#00f3ff'}"></i>
+                    <span>${app.name}</span>
+                `;
+                grid.appendChild(a);
+            });
+        }
+
+        function openAppModal(idx = -1) {
+            document.getElementById('editAppIndex').value = idx;
+            if(idx >= 0) {
+                document.getElementById('appModalTitle').innerText = 'Edit App Link';
+                document.getElementById('appName').value = googleApps[idx].name;
+                document.getElementById('appUrl').value = googleApps[idx].url;
+                document.getElementById('appIcon').value = googleApps[idx].icon;
+            } else {
+                document.getElementById('appModalTitle').innerText = 'Add App Link';
+                document.getElementById('appName').value = '';
+                document.getElementById('appUrl').value = '';
+                document.getElementById('appIcon').value = 'fas fa-link';
+            }
+            document.getElementById('appModal').style.display = 'flex';
+        }
+
+        function saveApp() {
+            const name = document.getElementById('appName').value;
+            const url = document.getElementById('appUrl').value;
+            const icon = document.getElementById('appIcon').value || 'fas fa-globe';
+            const idx = parseInt(document.getElementById('editAppIndex').value);
+
+            if(name && url) {
+                if(idx >= 0) googleApps[idx] = { name, url, icon, color: '#00f3ff' };
+                else googleApps.push({ name, url, icon, color: '#00f3ff' });
+                localStorage.setItem('prismGoogleApps', JSON.stringify(googleApps));
+                renderGoogleApps();
+                closeModal('appModal');
+            }
+        }
+
+        function deleteApp(e, idx) {
+            e.preventDefault();
+            e.stopPropagation();
+            googleApps.splice(idx, 1);
+            localStorage.setItem('prismGoogleApps', JSON.stringify(googleApps));
+            renderGoogleApps();
+        }
+
+        function editApp(e, idx) {
+            e.preventDefault();
+            e.stopPropagation();
+            openAppModal(idx);
+        }
+
+        renderGoogleApps();
+
+        /* --- 50 Search Engines Dictionary --- */
+        const searchEngines = [
+            { name: "Google", url: "https://www.google.com/search?q=" },
+            { name: "Bing", url: "https://www.bing.com/search?q=" },
+            { name: "Yahoo", url: "https://search.yahoo.com/search?p=" },
+            { name: "DuckDuckGo", url: "https://duckduckgo.com/?q=" },
+            { name: "Baidu", url: "https://www.baidu.com/s?wd=" },
+            { name: "Yandex", url: "https://yandex.com/search/?text=" },
+            { name: "Ecosia", url: "https://www.ecosia.org/search?q=" },
+            { name: "Startpage", url: "https://www.startpage.com/do/dsearch?query=" },
+            { name: "Brave Search", url: "https://search.brave.com/search?q=" },
+            { name: "Qwant", url: "https://www.qwant.com/?q=" },
+            { name: "Swisscows", url: "https://swisscows.com/en/web?query=" },
+            { name: "SearX", url: "https://searx.be/search?q=" },
+            { name: "WolframAlpha", url: "https://www.wolframalpha.com/input?i=" },
+            { name: "Perplexity", url: "https://www.perplexity.ai/search?q=" },
+            { name: "Phind", url: "https://www.phind.com/search?q=" },
+            { name: "You.com", url: "https://you.com/search?q=" }
+        ];
+
+        let activeEngineUrl = searchEngines[0].url;
+
+        function renderEngineList(filter = "") {
+            const listContainer = document.getElementById('engineList');
+            listContainer.innerHTML = "";
+            searchEngines.filter(e => e.name.toLowerCase().includes(filter.toLowerCase())).forEach(engine => {
+                const item = document.createElement('div');
+                item.className = 'engine-item';
+                item.innerText = engine.name;
+                item.onclick = (e) => {
+                    e.stopPropagation();
+                    activeEngineUrl = engine.url;
+                    document.getElementById('selectedEngineName').innerText = engine.name;
+                    document.getElementById('engineDropdownMenu').classList.remove('active');
+                };
+                listContainer.appendChild(item);
+            });
+        }
+
+        function filterEngines() { renderEngineList(document.getElementById('engineSearchInput').value); }
+        function toggleEngineMenu(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('engineDropdownMenu');
+            menu.classList.toggle('active');
+            if(menu.classList.contains('active')) document.getElementById('engineSearchInput').focus();
+        }
+        renderEngineList();
+
+        /* --- Navigation & Dropdowns --- */
+        const appsBtn = document.getElementById('appsBtn');
+        const appsDrop = document.getElementById('appsDropdown');
+        const profBtn = document.getElementById('navProfileImg');
+        const accDrop = document.getElementById('accountDropdown');
+
+        appsBtn.addEventListener('click', (e) => { e.stopPropagation(); appsDrop.classList.toggle('active'); accDrop.classList.remove('active'); });
+        profBtn.addEventListener('click', (e) => { e.stopPropagation(); accDrop.classList.toggle('active'); appsDrop.classList.remove('active'); });
+        document.body.addEventListener('click', () => { appsDrop.classList.remove('active'); accDrop.classList.remove('active'); document.getElementById('engineDropdownMenu').classList.remove('active'); });
+
+        /* --- Spotify & Bloxd Modals --- */
+        function toggleSpotifyWidget() { document.getElementById('spotifyWidget').classList.toggle('active'); }
+        function openGameModal() {
+            document.getElementById('gameIframeContainer').innerHTML = `<iframe src="https://bloxd.io/" class="game-iframe" allow="autoplay; fullscreen; camera; microphone; pointer-lock; accelerometer; gyroscope" sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-pointer-lock"></iframe>`;
+            document.getElementById('gameModal').style.display = 'flex';
+        }
+        function closeGameModal() {
+            document.getElementById('gameIframeContainer').innerHTML = '';
+            document.getElementById('gameModal').style.display = 'none';
+        }
+
+        /* --- Google Auth & Profile --- */
+        function parseJwt(token) {
+            try { return JSON.parse(window.atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); } catch (e) { return null; }
+        }
+        function handleCredentialResponse(response) {
+            const userObj = parseJwt(response.credential);
+            if(userObj) {
+                const user = { name: userObj.name, email: userObj.email, picture: userObj.picture };
+                localStorage.setItem('prism_user', JSON.stringify(user));
+                updateUserUI(user);
+            }
+        }
+        function demoLogin() {
+            const demoUser = { name: "Alex Mercer", email: "alex.mercer@gmail.com", picture: "https://ui-avatars.com/api/?name=Alex+Mercer&background=00f3ff&color=000" };
+            localStorage.setItem('prism_user', JSON.stringify(demoUser));
+            updateUserUI(demoUser);
+        }
+        function signOut() { localStorage.removeItem('prism_user'); updateUserUI(null); }
+        function updateUserUI(user) {
+            if (user) {
+                document.getElementById('navProfileImg').src = user.picture;
+                document.getElementById('dropdownProfileImg').src = user.picture;
+                document.getElementById('profileName').innerText = user.name;
+                document.getElementById('profileEmail').innerText = user.email;
+                document.getElementById('signedInView').style.display = 'block';
+                document.getElementById('signedOutView').style.display = 'none';
+            } else {
+                const defaultAvatar = "https://ui-avatars.com/api/?name=Guest&background=111&color=00f3ff";
+                document.getElementById('navProfileImg').src = defaultAvatar;
+                document.getElementById('dropdownProfileImg').src = defaultAvatar;
+                document.getElementById('profileName').innerText = "Guest User";
+                document.getElementById('profileEmail').innerText = "Not signed in";
+                document.getElementById('signedInView').style.display = 'none';
+                document.getElementById('signedOutView').style.display = 'flex';
+            }
+        }
+        window.onload = function () {
+            const savedUser = localStorage.getItem('prism_user');
+            if (savedUser) updateUserUI(JSON.parse(savedUser));
+        };
+
+        /* --- Search Bar --- */
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter' && this.value.trim() !== '') {
+                window.location.href = activeEngineUrl + encodeURIComponent(this.value.trim());
+            }
+        });
+
+        /* --- Dictation --- */
+        function startDictation(inputId) {
+            if (window.webkitSpeechRecognition || window.SpeechRecognition) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+                recognition.start();
+                recognition.onresult = function(e) {
+                    document.getElementById(inputId).value = e.results[0][0].transcript;
+                    if(inputId === 'searchInput') window.location.href = activeEngineUrl + encodeURIComponent(e.results[0][0].transcript);
+                };
+            }
+        }
+
+        /* --- Shortcuts Grid --- */
+        const shortcutsGrid = document.getElementById('shortcutsGrid');
+        let shortcuts = JSON.parse(localStorage.getItem('prismShortcuts')) || [
+            { name: 'YouTube', url: 'https://youtube.com' },
+            { name: 'GitHub', url: 'https://github.com' },
+            { name: 'Reddit', url: 'https://reddit.com' }
+        ];
+
+        function renderShortcuts() {
+            shortcutsGrid.innerHTML = '';
+            shortcuts.forEach((sc, index) => {
+                const domain = new URL(sc.url.startsWith('http') ? sc.url : 'https://'+sc.url).hostname;
+                const iconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+                const div = document.createElement('div');
+                div.className = 'shortcut';
+                div.innerHTML = `
+                    <div class="shortcut-actions">
+                        <button class="s-btn" onclick="editShortcut(event, ${index})"><i class="fas fa-pen"></i></button>
+                        <button class="s-btn" onclick="deleteShortcut(event, ${index})"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <img src="${iconUrl}" alt="${sc.name}" onerror="this.src='https://via.placeholder.com/64/000000/00f3ff?text=${sc.name.charAt(0)}'">
+                    <span>${sc.name}</span>
+                `;
+                div.onclick = () => window.location.href = sc.url.startsWith('http') ? sc.url : 'https://'+sc.url;
+                shortcutsGrid.appendChild(div);
+            });
+            const addBtn = document.createElement('div');
+            addBtn.className = 'shortcut add-shortcut';
+            addBtn.innerHTML = '<i class="fas fa-plus"></i>';
+            addBtn.onclick = () => openModal('shortcutModal');
+            shortcutsGrid.appendChild(addBtn);
+        }
+
+        function openModal(id, index = -1) {
+            if(id === 'shortcutModal') {
+                document.getElementById('editIndex').value = index;
+                if(index >= 0) {
+                    document.getElementById('scName').value = shortcuts[index].name;
+                    document.getElementById('scUrl').value = shortcuts[index].url;
+                } else {
+                    document.getElementById('scName').value = '';
+                    document.getElementById('scUrl').value = '';
+                }
+            }
+            document.getElementById(id).style.display = 'flex';
+        }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        
+        function saveShortcut() {
+            const name = document.getElementById('scName').value;
+            const url = document.getElementById('scUrl').value;
+            const index = parseInt(document.getElementById('editIndex').value);
+            if(name && url) {
+                if(index >= 0) shortcuts[index] = { name, url };
+                else shortcuts.push({ name, url });
+                localStorage.setItem('prismShortcuts', JSON.stringify(shortcuts));
+                renderShortcuts();
+                closeModal('shortcutModal');
+            }
+        }
+        function deleteShortcut(e, index) { e.stopPropagation(); shortcuts.splice(index, 1); localStorage.setItem('prismShortcuts', JSON.stringify(shortcuts)); renderShortcuts(); }
+        function editShortcut(e, index) { e.stopPropagation(); openModal('shortcutModal', index); }
+        renderShortcuts();
+
+        /* --- AI Sidebar --- */
+        const aiSidebar = document.getElementById('aiSidebar');
+        const mainContainer = document.getElementById('mainContainer');
+        const aiChatBox = document.getElementById('aiChatBox');
+        const aiInput = document.getElementById('aiInput');
+
+        function toggleAI() {
+            aiSidebar.classList.toggle('open');
+            mainContainer.style.marginRight = aiSidebar.classList.contains('open') ? "450px" : "0";
+        }
+
+        function quickPrompt(text) { aiInput.value = text; sendAIMessage(); }
+
+        async function sendAIMessage() {
+            const text = aiInput.value.trim();
+            if (!text) return;
+            appendUserMessage(text);
+            aiInput.value = '';
+            const loadingId = 'load-' + Date.now();
+            appendAIMessage('<i class="fas fa-circle-notch fa-spin"></i> Processing...', loadingId);
+
+            try {
+                let res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(text)}`);
+                let data = await res.text();
+                document.getElementById(loadingId).remove();
+                appendAIMessage(data);
+            } catch (e) {
+                document.getElementById(loadingId).remove();
+                appendAIMessage('Error reaching AI service.');
+            }
+        }
+
+        function appendUserMessage(text) {
+            const div = document.createElement('div');
+            div.className = 'chat-bubble-wrapper user';
+            div.innerHTML = `<div class="msg-avatar"><i class="fas fa-user"></i></div><div class="chat-msg">${text}</div>`;
+            aiChatBox.appendChild(div);
+            aiChatBox.scrollTop = aiChatBox.scrollHeight;
+        }
+
+        function appendAIMessage(text, id = '') {
+            const div = document.createElement('div');
+            div.className = 'chat-bubble-wrapper ai';
+            if(id) div.id = id;
+            div.innerHTML = `<div class="msg-avatar">AI</div><div class="chat-msg">${text}</div>`;
+            aiChatBox.appendChild(div);
+            aiChatBox.scrollTop = aiChatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
