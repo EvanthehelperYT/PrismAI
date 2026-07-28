@@ -1,179 +1,2706 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prism — one mind, refracted</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#07060c;--bg2:#0c0a14;--panel:rgba(20,16,30,.66);--panel-solid:#120e1c;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.16);--text:#f4eefb;--dim:#9a8fb5;--dim2:#6c6285;--brand:linear-gradient(95deg,#ff2d9b 0%,#b14bff 47%,#21d4fd 100%);--accent:#22d3ee;--accent-rgb:34,211,238}
-*{margin:0;padding:0;box-sizing:border-box}html,body{height:100%}body{background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}::selection{background:rgba(var(--accent-rgb),.32)}::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:9px}::-webkit-scrollbar-thumb:hover{background:rgba(var(--accent-rgb),.4)}
-.grain{position:fixed;inset:0;pointer-events:none;z-index:2;opacity:.05;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.gridbg{position:fixed;inset:0;pointer-events:none;opacity:.5;z-index:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:46px 46px;-webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000 18%,transparent 76%);mask-image:radial-gradient(ellipse at 50% 30%,#000 18%,transparent 76%)}
-.beam{position:fixed;height:18vmax;width:150vmax;filter:blur(80px);pointer-events:none;z-index:0;opacity:.16}.b1{background:linear-gradient(90deg,transparent,rgb(var(--accent-rgb)),transparent);top:-10%;left:-30%;transform:rotate(-15deg);animation:drift 24s ease-in-out infinite alternate;transition:background 1s}.b2{background:linear-gradient(90deg,transparent,#ff2d9b,transparent);bottom:2%;left:-25%;transform:rotate(11deg);animation:drift 32s ease-in-out infinite alternate-reverse}.b3{background:linear-gradient(90deg,transparent,#21d4fd,transparent);top:42%;left:-12%;transform:rotate(-3deg);animation:drift 40s ease-in-out infinite alternate}@keyframes drift{from{translate:0 0}to{translate:7vmax 4vmax}}
-.motes{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}.mote{position:absolute;border-radius:50%;animation:float var(--dur) ease-in-out infinite;animation-delay:var(--del);opacity:var(--o)}@keyframes float{0%,100%{transform:translate(0,0);opacity:var(--o)}50%{transform:translate(var(--dx),var(--dy));opacity:calc(var(--o)*2.2)}}
 
-/* LOADING OVERLAY */
-#model-loader{position:fixed;inset:0;background:rgba(7,6,12,.95);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;backdrop-filter:blur(12px);transition:opacity .6s cubic-bezier(.2,.9,.3,1)}#model-loader.hidden{opacity:0;pointer-events:none}
-.loader-glow{position:absolute;width:300px;height:100px;background:radial-gradient(ellipse,rgba(177,75,255,.15),transparent 70%);filter:blur(20px);pointer-events:none}
-.loader-bar{width:320px;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;position:relative}
-.loader-fill{height:100%;width:0%;background:var(--brand);background-size:200% 100%;animation:shimmer 2s linear infinite;border-radius:3px;transition:width .4s cubic-bezier(.2,.9,.3,1);box-shadow:0 0 12px rgba(33,212,253,.4)}
-.loader-text{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--dim);letter-spacing:.08em;text-align:center;min-height:20px;transition:opacity .3s}
+        <head>
+                <meta charset="UTF-8">
+                <meta name="viewport"
+                        content="width=device-width, initial-scale=1.0">
+                <title>Prism · Bloxd Script Editor</title>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+                        rel="stylesheet">
+                <style>
+                        :root {
+                                --bg: #0a0e1a;
+                                --bg2: #10131f;
+                                --panel: #161a29;
+                                --panel2: #1d2233;
+                                --panel3: #262c40;
+                                --line: rgba(255, 255, 255, .08);
+                                --line2: rgba(255, 255, 255, .16);
+                                --ink: #e9eef9;
+                                --dim: #8b93ad;
+                                --dim2: #5b637e;
+                                --cyan: #57c6ec;
+                                --grass: #7be08a;
+                                --amber: #f3b24b;
+                                --coral: #ff7a6b;
+                                --violet: #b48bff;
+                                --acc: var(--cyan);
+                                --acc-rgb: 87, 198, 236;
+                                --mono: 'JetBrains Mono', ui-monospace, monospace;
+                                --ui: 'Space Grotesk', system-ui, sans-serif;
+                                --pix: 'Silkscreen', monospace
+                        }
 
-/* LOGO & BOOT */
-#boot{position:fixed;inset:0;background:var(--bg);z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;transition:opacity .7s}#boot.done{opacity:0;pointer-events:none}#boot .logo{transform:scale(1.5)}#bootlines{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);line-height:2.2;text-align:left;width:300px}#bootlines div{opacity:0;transform:translateY(6px);transition:.35s}#bootlines div.on{opacity:1;transform:none}#bootlines .ok{color:var(--accent)}#bootlines div:last-child.on::after{content:'▮';animation:blink 1s steps(1) infinite;color:var(--accent)}@keyframes blink{50%{opacity:0}}
-.logo{display:flex;align-items:center;gap:14px;z-index:2}
-.mark-wrap{position:relative;width:48px;height:48px;flex-shrink:0;perspective:800px}
-.mark-ring{position:absolute;inset:-40%;border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(255,45,155,.5),transparent 38%,rgba(177,75,255,.4),transparent 64%,rgba(33,212,253,.5),transparent 90%);filter:blur(8px);opacity:.5;animation:spin 12s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.mark{position:relative;width:100%;height:100%;transform-style:preserve-3d;animation:gyrate 8s linear infinite;filter:drop-shadow(0 0 6px rgba(33,212,253,.6)) drop-shadow(0 0 12px rgba(255,45,155,.4))}
-@keyframes gyrate{
-  0%{transform:rotateY(0deg) rotateX(15deg) rotateZ(0deg)}
-  25%{transform:rotateY(90deg) rotateX(25deg) rotateZ(10deg)}
-  50%{transform:rotateY(180deg) rotateX(15deg) rotateZ(0deg)}
-  75%{transform:rotateY(270deg) rotateX(5deg) rotateZ(-10deg)}
-  100%{transform:rotateY(360deg) rotateX(15deg) rotateZ(0deg)}
-}
-.mark svg{width:100%;height:100%;display:block}
-.wordmark{font-family:'Fredoka',sans-serif;font-weight:600;font-size:28px;letter-spacing:.01em;line-height:1;background:linear-gradient(95deg,#21d4fd 0%,#b14bff 50%,#ff2d9b 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 7s linear infinite}
-@keyframes shimmer{to{background-position:220% 0}}
-.wordmark-sub{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.34em;color:var(--dim2);margin-top:5px}
+                        * {
+                                margin: 0;
+                                padding: 0;
+                                box-sizing: border-box
+                        }
 
-.app{display:flex;height:100vh;position:relative;z-index:3}.rail{width:262px;flex-shrink:0;display:flex;flex-direction:column;padding:20px 14px 16px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.008));backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-right:1px solid var(--line)}.brand{padding:2px 8px 20px}.rail-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.3em;color:var(--dim2);padding:12px 10px 8px}
-.facet{display:flex;align-items:center;gap:11px;width:100%;padding:9px 10px;border:0;background:transparent;color:var(--text);font-family:'Manrope',sans-serif;cursor:pointer;border-radius:10px;position:relative;transition:background .2s,transform .2s;text-align:left}.facet::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:2.5px;border-radius:3px;background:var(--fc);opacity:0;transition:.25s}.facet:hover{background:rgba(255,255,255,.05);transform:translateX(3px)}.facet .fg{width:31px;height:31px;flex-shrink:0;display:grid;place-items:center;border:1px solid var(--line2);border-radius:8px;font-size:14px;color:var(--fc);transition:.3s}.facet b{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;letter-spacing:.06em;display:block}.facet i{font-style:normal;font-size:10px;color:var(--dim);display:block;margin-top:1px}.facet.active{background:color-mix(in srgb,var(--fc) 12%,transparent)}.facet.active::before{opacity:1;box-shadow:0 0 10px var(--fc)}.facet.active .fg{border-color:var(--fc);box-shadow:0 0 14px color-mix(in srgb,var(--fc) 45%,transparent)}.facet.active b{color:#fff}
-.shortcut{display:block;width:100%;padding:7px 10px;background:transparent;border:0;color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:11px;text-align:left;cursor:pointer;border-radius:7px;transition:.18s}.shortcut:hover{color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,transparent);transform:translateX(3px)}
-.rail-foot{margin-top:auto;padding:13px 10px 0;border-top:1px solid var(--line)}.eq{display:flex;gap:4px;align-items:flex-end;height:18px;margin-bottom:10px}.eq span{width:4px;border-radius:2px;animation:eqb 1.1s ease-in-out infinite}.eq span:nth-child(1){background:#22d3ee;height:60%}.eq span:nth-child(2){background:#ff2d9b;height:100%;animation-delay:.15s}.eq span:nth-child(3){background:#a3e635;height:45%;animation-delay:.3s}.eq span:nth-child(4){background:#fb923c;height:85%;animation-delay:.45s}.eq span:nth-child(5){background:#a855f7;height:70%;animation-delay:.6s}@keyframes eqb{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}.rail-foot small{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--dim2);letter-spacing:.16em;line-height:1.9;display:block}
-.stage{flex:1;display:flex;flex-direction:column;min-width:0}.top{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:rgba(10,8,16,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}.crumb{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;letter-spacing:.16em}.crumb .sep{color:var(--dim2);margin:0 8px;font-weight:400}#crumbPersona{color:var(--accent);transition:color .4s}.sys{display:flex;gap:18px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:.08em;align-items:center}.sys b{color:var(--text);font-weight:600}.dot{width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;margin-right:6px;animation:pulse 2s infinite}@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}50%{box-shadow:0 0 0 6px rgba(74,222,128,0)}}.spectrum{height:2px;background:var(--brand);opacity:.5;background-size:200% 100%;animation:shimmer 7s linear infinite}
-.chat{flex:1;overflow-y:auto;padding:30px 28px 12px;scroll-behavior:smooth}.chat-inner{max-width:840px;margin:0 auto;display:flex;flex-direction:column;gap:18px}.sysline{text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.26em;color:var(--dim2);padding:2px 0}.sysline.acc{color:var(--accent)}
-.msg{display:flex;gap:12px;animation:msgIn .42s cubic-bezier(.2,.9,.3,1)}@keyframes msgIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}.msg.user{justify-content:flex-end}.avatar{width:35px;height:35px;flex-shrink:0;display:grid;place-items:center;border-radius:9px;font-size:15px;transition:.3s}.bubble{max-width:78%;padding:12px 16px 13px;font-size:14.5px;line-height:1.66}.msg.ai .bubble{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:4px 14px 14px 14px}.msg.user .bubble{background:color-mix(in srgb,var(--accent) 13%,transparent);border:1px solid color-mix(in srgb,var(--accent) 42%,transparent);border-radius:14px 4px 14px 14px}.meta{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.22em;color:var(--dim);margin-bottom:7px}.bubble p{margin:0 0 9px}.bubble p:last-child{margin:0}.bubble b{color:var(--accent)}.hl{color:var(--accent);font-style:normal;font-weight:700}
-.dots{display:inline-flex;gap:5px;padding:6px 2px}.dots span{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:db 1.2s infinite}.dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}@keyframes db{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-6px);opacity:1}}
-.codeblock{margin:11px 0 4px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#08060e}.cb-head{display:flex;justify-content:space-between;align-items:center;padding:8px 13px;background:rgba(255,255,255,.03);border-bottom:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase}.copy{background:transparent;border:1px solid var(--line2);color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;padding:3px 10px;border-radius:6px;cursor:pointer;transition:.2s;text-transform:uppercase}.copy:hover{color:var(--accent);border-color:var(--accent)}.codeblock pre{padding:14px 16px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.72}.tk-k{color:#ff7b9c}.tk-s{color:#9be8ff}.tk-c{color:#6c6285;font-style:italic}.tk-n{color:#c4a3ff}
-.tasks{margin:11px 0 4px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.02);overflow:hidden}.t-head{display:flex;justify-content:space-between;align-items:center;padding:10px 15px;border-bottom:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.2em;color:var(--dim)}.t-head b{color:var(--accent)}.t-bar{height:3px;background:rgba(255,255,255,.06)}.t-bar i{display:block;height:100%;width:0;background:var(--brand);background-size:200% 100%;transition:width .5s cubic-bezier(.2,.9,.3,1);box-shadow:0 0 10px rgba(var(--accent-rgb),.6)}.task{display:flex;align-items:center;gap:12px;padding:10px 15px;cursor:pointer;transition:background .15s;font-size:13.5px}.task:hover{background:rgba(255,255,255,.04)}.task input{appearance:none;width:17px;height:17px;flex-shrink:0;border:1.5px solid var(--dim);border-radius:5px;cursor:pointer;position:relative;transition:.2s}.task input:checked{background:var(--accent);border-color:var(--accent)}.task input:checked::after{content:'✓';position:absolute;inset:0;display:grid;place-items:center;font-size:11px;color:#07060c;font-weight:800}.task span{transition:.25s}.task input:checked + span{color:var(--dim);text-decoration:line-through}
-.help{margin:8px 0;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.02);padding:14px 16px}.h-title{font-family:'Space Grotesk',sans-serif;font-size:10px;letter-spacing:.22em;color:var(--accent);margin-bottom:11px;font-weight:600}.h-row{display:flex;gap:14px;padding:5px 0;font-size:13px;align-items:baseline}.h-row code{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 11%,transparent);padding:2px 8px;border-radius:5px;white-space:nowrap}
-.chips{display:flex;gap:9px;padding:11px 28px 4px;overflow-x:auto;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}.chip{flex-shrink:0;padding:8px 15px;border:1px solid var(--line2);border-radius:22px;background:rgba(255,255,255,.02);color:var(--dim);font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:.22s}.chip:hover{border-color:var(--accent);color:var(--text);transform:translateY(-2px);box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 22%,transparent)}
-.composer{display:flex;gap:12px;padding:14px 28px 22px;align-items:flex-end}.composer-inner{flex:1;display:flex;align-items:flex-end;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid var(--line2);border-radius:15px;padding:6px 6px 6px 18px;transition:border-color .25s,box-shadow .25s}.composer-inner:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent)}.composer.shake .composer-inner{animation:shake .35s}@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}#inp{flex:1;background:transparent;border:0;outline:0;resize:none;color:var(--text);font-family:'Manrope',sans-serif;font-size:14.5px;line-height:1.5;max-height:120px;padding:8px 0}#inp::placeholder{color:var(--dim2)}#sendBtn{width:44px;height:44px;flex-shrink:0;border:0;border-radius:11px;background:var(--brand);background-size:180% 100%;color:#fff;cursor:pointer;display:grid;place-items:center;transition:.22s;animation:shimmer 7s linear infinite}#sendBtn:hover{box-shadow:0 0 24px rgba(255,45,155,.5),0 0 24px rgba(33,212,253,.4);transform:translateY(-2px)}#sendBtn:active{transform:scale(.9)}
-@media(max-width:880px){.app{flex-direction:column}.rail{width:100%;flex-direction:row;align-items:center;border-right:0;border-bottom:1px solid var(--line);padding:10px 12px;gap:6px;overflow-x:auto}.brand{padding:0 6px 0 0}.brand .wordmark{font-size:20px}.wordmark-sub,.rail-label,.shortcuts,.rail-foot{display:none}.facet{width:auto;flex-shrink:0}.facet i{display:none}.facet::before{display:none}.facet.active{box-shadow:inset 0 -2px 0 var(--fc)}.bubble{max-width:88%}.sys span.hideS{display:none}.mark-wrap{width:34px;height:34px}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-</style>
-</head>
-<body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gOuter" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#21d4fd"/><stop offset="1" stop-color="#a855f7"/></linearGradient><linearGradient id="gInner" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2d9b"/><stop offset="1" stop-color="#b14bff"/></linearGradient></defs></svg>
-<div class="grain"></div><div class="gridbg"></div><div class="beam b1"></div><div class="beam b2"></div><div class="beam b3"></div><div class="motes" id="motes"></div>
+                        html,
+                        body {
+                                height: 100%
+                        }
 
-<!-- MODEL LOADING OVERLAY -->
-<div id="model-loader">
-  <div class="loader-glow"></div>
-  <div class="logo"><div class="mark-wrap"><div class="mark-ring"></div><div class="mark"><svg viewBox="0 0 48 48" fill="none"><path d="M11 7 L11 41 L41 24 Z" stroke="url(#gOuter)" stroke-width="2.4" stroke-linejoin="round"/><path d="M19 24 L11 7 M19 24 L11 41 M19 24 L41 24" stroke="url(#gInner)" stroke-width="2" stroke-linecap="round"/></svg></div></div><div class="wordmark">Prism</div></div>
-  <div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
-  <div class="loader-text" id="loaderText">Initializing...</div>
-</div>
+                        body {
+                                background: var(--bg);
+                                color: var(--ink);
+                                font-family: var(--ui);
+                                overflow: hidden;
+                                -webkit-font-smoothing: antialiased
+                        }
 
-<div id="boot"><div class="logo"><div class="mark-wrap"><div class="mark-ring"></div><div class="mark"><svg viewBox="0 0 48 48" fill="none"><path d="M11 7 L11 41 L41 24 Z" stroke="url(#gOuter)" stroke-width="2.4" stroke-linejoin="round"/><path d="M19 24 L11 7 M19 24 L11 41 M19 24 L41 24" stroke="url(#gInner)" stroke-width="2" stroke-linecap="round"/></svg></div></div><div class="wordmark">Prism</div></div><div id="bootlines"><div>&gt; aligning optics .............. <span class="ok">ok</span></div><div>&gt; calibrating spectrum ......... <span class="ok">5 facets refracted</span></div><div>&gt; loading persona matrix ....... <span class="ok">CORE ▮</span></div><div>&gt; Prism v1.0 — <span class="ok">online</span></div></div></div>
+                        ::selection {
+                                background: rgba(var(--acc-rgb), .32)
+                        }
 
-<div class="app">
-  <aside class="rail">
-    <div class="brand"><div class="logo"><div class="mark-wrap"><div class="mark-ring"></div><div class="mark"><svg viewBox="0 0 48 48" fill="none"><path d="M11 7 L11 41 L41 24 Z" stroke="url(#gOuter)" stroke-width="2.4" stroke-linejoin="round"/><path d="M19 24 L11 7 M19 24 L11 41 M19 24 L41 24" stroke="url(#gInner)" stroke-width="2" stroke-linecap="round"/></svg></div></div><div><div class="wordmark">Prism</div><div class="wordmark-sub">AI · v1.0</div></div></div></div>
-    <div class="rail-label">FACETS</div><div id="facets"></div>
-    <div class="rail-label">SHORTCUTS</div><div class="shortcuts"><button class="shortcut" data-cmd="/code">/code — drop a snippet</button><button class="shortcut" data-cmd="/task">/task — build a plan</button><button class="shortcut" data-cmd="/help">/help — command surface</button><button class="shortcut" data-cmd="/clear">/clear — wipe session</button></div>
-    <div class="rail-foot"><div class="eq"><span></span><span></span><span></span><span></span><span></span></div><small>CUSTOM-TRAINED BUILD<br>SPECTRUM ENGINE · STABLE</small></div>
-  </aside>
-  <main class="stage">
-    <header class="top"><div class="crumb">PRISM<span class="sep">/</span><span id="crumbPersona">CORE</span></div><div class="sys"><span><span class="dot"></span>ONLINE</span><span class="hideS">LAT <b id="lat">—</b></span><span class="hideS">SID <b id="sess">—</b></span><span><b id="clk">—</b></span></div></header>
-    <div class="spectrum"></div>
-    <div class="chat"><div class="chat-inner" id="chat"></div></div>
-    <div class="chips" id="qchips"><button class="chip"> Write a debounce function in JS</button><button class="chip">▲ Plan my afternoon</button><button class="chip">✦ Tell me a joke</button><button class="chip">⬡ Flip a coin</button><button class="chip">◆ What can you do?</button></div>
-    <div class="composer" id="composer"><div class="composer-inner"><textarea id="inp" rows="1" placeholder="Message CORE — code, tasks, anything…"></textarea><button id="sendBtn" aria-label="send"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z" fill="currentColor"/></svg></button></div></div>
-  </main>
-</div>
+                        ::-webkit-scrollbar {
+                                width: 9px;
+                                height: 9px
+                        }
 
-<script type="module">
-// ==========================================
-// PRISM MOE BROWSER INFERENCE ENGINE
-// ==========================================
-import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/+esm';
+                        ::-webkit-scrollbar-thumb {
+                                background: rgba(255, 255, 255, .12);
+                                border-radius: 9px
+                        }
 
-env.allowRemoteModels = true;
-env.remoteHost = 'https://huggingface.co';
-env.remotePathTemplate = '{model}/resolve/main/{file}';
+                        ::-webkit-scrollbar-thumb:hover {
+                                background: rgba(var(--acc-rgb), .45)
+                        }
 
-const MODEL_ID = 'EvanthehelperYT/prism-moe-brain';
-const MODEL_FILE = 'prism-moe-q4_k_m.gguf';
+                        /* ambient layers */
+                        .iso {
+                                position: fixed;
+                                inset: 0;
+                                z-index: 0;
+                                pointer-events: none;
+                                opacity: .5;
+                                background-image: repeating-linear-gradient(30deg, rgba(255, 255, 255, .022) 0 1px, transparent 1px 48px), repeating-linear-gradient(-30deg, rgba(255, 255, 255, .022) 0 1px, transparent 1px 48px);
+                                -webkit-mask-image: radial-gradient(ellipse at 50% 42%, #000 10%, transparent 82%);
+                                mask-image: radial-gradient(ellipse at 50% 42%, #000 10%, transparent 82%)
+                        }
 
-let generator = null;
-let modelReady = false;
+                        .sheen {
+                                position: fixed;
+                                inset: -30%;
+                                z-index: 0;
+                                pointer-events: none;
+                                opacity: .5;
+                                background: linear-gradient(115deg, transparent 38%, rgba(87, 198, 236, .05) 50%, transparent 62%);
+                                animation: sheen 16s ease-in-out infinite alternate
+                        }
 
-const SYSTEM_PROMPTS = {
-  dev: "You are Prism Dev, the Coding Agent. Output clean, production-ready code with error handling. Infer missing constraints. Never add conversational filler unless asked.",
-  reflex: "You are Prism Reflex, the Chat Agent. Quick, adaptive, responsive. Match user energy. Be concise when brief, expansive when detailed.",
-  focus: "You are Prism Focus, the Writing Agent. Sharp, clear, intentional. Eliminate fluff. Every sentence must earn its place.",
-  spectrum: "You are Prism Spectrum, the Design Agent. Think in composition, color theory, typography. Describe visuals precisely."
-};
+                        @keyframes sheen {
+                                from {
+                                        transform: translateX(-12%) translateY(-4%)
+                                }
 
-const HUMAN_MESSAGES = [
-  "Warming up the neural optics...",
-  "Calibrating the spectrum...",
-  "Polishing the facets...",
-  "Aligning the light beams...",
-  "Almost there, just focusing...",
-  "Ready to shine!"
-];
+                                to {
+                                        transform: translateX(12%) translateY(4%)
+                                }
+                        }
 
-async function initModel() {
-  const loader = document.getElementById('model-loader');
-  const fill = document.getElementById('loaderFill');
-  const text = document.getElementById('loaderText');
-  
-  try {
-    text.textContent = HUMAN_MESSAGES[0];
-    
-    generator = await pipeline('text-generation', `${MODEL_ID}/${MODEL_FILE}`, {
-      quantized: true,
-      device: 'webgpu',
-      progress_callback: (data) => {
-        if (data.status === 'progress') {
-          const pct = Math.round((data.loaded / data.total) * 100);
-          fill.style.width = `${pct}%`;
-          
-          // Update text based on progress percentage
-          const msgIndex = Math.min(Math.floor(pct / 20), HUMAN_MESSAGES.length - 1);
-          text.textContent = HUMAN_MESSAGES[msgIndex];
-        } else if (data.status === 'done') {
-          text.textContent = HUMAN_MESSAGES[HUMAN_MESSAGES.length - 1];
-          fill.style.width = '100%';
-        }
-      }
-    });
-    
-    modelReady = true;
-    setTimeout(() => loader.classList.add('hidden'), 800);
-    console.log('✅ Prism MoE loaded successfully');
-  } catch (err) {
-    text.textContent = 'WebGPU not supported. Falling back to CPU...';
-    try {
-      generator = await pipeline('text-generation', `${MODEL_ID}/${MODEL_FILE}`, {
-        quantized: true,
-        device: 'wasm',
-        progress_callback: (data) => {
-          if (data.status === 'progress') {
-            const pct = Math.round((data.loaded / data.total) * 100);
-            fill.style.width = `${pct}%`;
-            const msgIndex = Math.min(Math.floor(pct / 20), HUMAN_MESSAGES.length - 1);
-            text.textContent = HUMAN_MESSAGES[msgIndex];
-          }
-        }
-      });
-      modelReady = true;
-      setTimeout(() => loader.classList.add('hidden'), 800);
-    } catch (cpuErr) {
-      text.textContent = 'Failed to load model. Please use Chrome/Edge.';
-      console.error('Model load failed:', cpuErr);
-    }
-  }
-}
+                        .scan {
+                                position: fixed;
+                                inset: 0;
+                                z-index: 4;
+                                pointer-events: none;
+                                opacity: .04;
+                                mix-blend-mode: overlay;
+                                background: repeating-linear-gradient(0deg, #fff 0 1px, transparent 1px 3px);
+                                animation: scanmv 9s linear infinite
+                        }
 
-async function generateResponse(message, persona = 'dev') {
-  if (!modelReady || !generator) return 'Prism brain still warming up... please wait.';
-  
-  const systemPrompt = SYSTEM_PROMPTS[persona] || SYSTEM_PROMPTS.dev;
-  const formattedPrompt = `
+                        @keyframes scanmv {
+                                to {
+                                        background-position: 0 120px
+                                }
+                        }
+
+                        .vox {
+                                position: fixed;
+                                z-index: 0;
+                                width: 30px;
+                                height: 30px;
+                                pointer-events: none;
+                                opacity: .14;
+                                transform-style: preserve-3d;
+                                animation: tumble var(--d) linear infinite
+                        }
+
+                        .vox i {
+                                position: absolute;
+                                inset: 0;
+                                border: 1.5px solid var(--vc);
+                                border-radius: 4px
+                        }
+
+                        .vox i:nth-child(1) {
+                                transform: translateZ(15px)
+                        }
+
+                        .vox i:nth-child(2) {
+                                transform: rotateY(90deg) translateZ(15px)
+                        }
+
+                        .vox i:nth-child(3) {
+                                transform: rotateX(90deg) translateZ(15px)
+                        }
+
+                        @keyframes tumble {
+                                from {
+                                        transform: rotateX(0) rotateY(0) rotateZ(0)
+                                }
+
+                                to {
+                                        transform: rotateX(360deg) rotateY(360deg) rotateZ(180deg)
+                                }
+                        }
+
+                        /* overlays */
+                        .overlay {
+                                position: fixed;
+                                inset: 0;
+                                z-index: 60;
+                                background: rgba(8, 10, 16, .96);
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 22px;
+                                backdrop-filter: blur(10px);
+                                transition: opacity .6s
+                        }
+
+                        .overlay.gone {
+                                opacity: 0;
+                                pointer-events: none
+                        }
+
+                        .glow {
+                                position: absolute;
+                                width: 340px;
+                                height: 120px;
+                                background: radial-gradient(ellipse, rgba(var(--acc-rgb), .16), transparent 70%);
+                                filter: blur(22px)
+                        }
+
+                        .logo {
+                                display: flex;
+                                align-items: center;
+                                gap: 14px;
+                                z-index: 2
+                        }
+
+                        .mark-wrap {
+                                position: relative;
+                                width: 46px;
+                                height: 46px;
+                                perspective: 800px
+                        }
+
+                        .ring {
+                                position: absolute;
+                                inset: -42%;
+                                border-radius: 50%;
+                                filter: blur(8px);
+                                opacity: .55;
+                                animation: spin 11s linear infinite;
+                                background: conic-gradient(from 0deg, transparent, rgba(123, 224, 138, .55), transparent 36%, rgba(87, 198, 236, .5), transparent 64%, rgba(243, 178, 75, .55), transparent 92%)
+                        }
+
+                        @keyframes spin {
+                                to {
+                                        transform: rotate(360deg)
+                                }
+                        }
+
+                        .mark {
+                                position: relative;
+                                width: 100%;
+                                height: 100%;
+                                transform-style: preserve-3d;
+                                animation: gyrate 8s linear infinite;
+                                filter: drop-shadow(0 0 6px rgba(123, 224, 138, .55)) drop-shadow(0 0 12px rgba(87, 198, 236, .4))
+                        }
+
+                        @keyframes gyrate {
+                                0% {
+                                        transform: rotateY(0) rotateX(15deg) rotateZ(0)
+                                }
+
+                                25% {
+                                        transform: rotateY(90deg) rotateX(26deg) rotateZ(12deg)
+                                }
+
+                                50% {
+                                        transform: rotateY(180deg) rotateX(15deg) rotateZ(0)
+                                }
+
+                                75% {
+                                        transform: rotateY(270deg) rotateX(4deg) rotateZ(-12deg)
+                                }
+
+                                100% {
+                                        transform: rotateY(360deg) rotateX(15deg) rotateZ(0)
+                                }
+                        }
+
+                        .mark svg {
+                                width: 100%;
+                                height: 100%;
+                                display: block
+                        }
+
+                        .wm {
+                                font-family: var(--pix);
+                                font-weight: 700;
+                                font-size: 22px;
+                                letter-spacing: .02em;
+                                line-height: 1;
+                                background: linear-gradient(95deg, var(--cyan), var(--grass) 50%, var(--amber));
+                                -webkit-background-clip: text;
+                                background-clip: text;
+                                color: transparent
+                        }
+
+                        .wm small {
+                                display: block;
+                                font-family: var(--mono);
+                                font-size: 8px;
+                                letter-spacing: .3em;
+                                color: var(--dim2);
+                                margin-top: 6px;
+                                -webkit-text-fill-color: var(--dim2)
+                        }
+
+                        .bar {
+                                width: 300px;
+                                height: 6px;
+                                background: rgba(255, 255, 255, .08);
+                                border-radius: 3px;
+                                overflow: hidden
+                        }
+
+                        .bar i {
+                                display: block;
+                                height: 100%;
+                                width: 0;
+                                border-radius: 3px;
+                                background: linear-gradient(90deg, var(--cyan), var(--grass), var(--amber));
+                                background-size: 200% 100%;
+                                animation: sh 2s linear infinite;
+                                transition: width .4s cubic-bezier(.2, .9, .3, 1);
+                                box-shadow: 0 0 12px rgba(var(--acc-rgb), .5)
+                        }
+
+                        @keyframes sh {
+                                to {
+                                        background-position: 200% 0
+                                }
+                        }
+
+                        .ltxt {
+                                font-family: var(--mono);
+                                font-size: 12px;
+                                color: var(--dim);
+                                letter-spacing: .06em;
+                                min-height: 18px;
+                                text-align: center
+                        }
+
+                        /* shell */
+                        .app {
+                                position: relative;
+                                z-index: 3;
+                                display: flex;
+                                flex-direction: column;
+                                height: 100vh
+                        }
+
+                        .topbar {
+                                display: flex;
+                                align-items: center;
+                                gap: 14px;
+                                padding: 11px 20px;
+                                background: linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(255, 255, 255, .01));
+                                border-bottom: 1px solid var(--line);
+                                backdrop-filter: blur(10px)
+                        }
+
+                        .topbar .logo {
+                                gap: 10px
+                        }
+
+                        .topbar .mark-wrap {
+                                width: 30px;
+                                height: 30px
+                        }
+
+                        .topbar .wm {
+                                font-size: 15px
+                        }
+
+                        .topbar .wm small {
+                                display: none
+                        }
+
+                        .proj {
+                                font-family: var(--pix);
+                                font-size: 10px;
+                                color: var(--dim);
+                                letter-spacing: .04em;
+                                padding: 5px 10px;
+                                border: 1px solid var(--line2);
+                                border-radius: 7px;
+                                background: var(--panel)
+                        }
+
+                        .proj b {
+                                color: var(--ink)
+                        }
+
+                        .tele {
+                                display: flex;
+                                align-items: center;
+                                gap: 14px;
+                                margin-left: 6px
+                        }
+
+                        .wave {
+                                width: 64px;
+                                height: 22px;
+                                display: block;
+                                opacity: .85
+                        }
+
+                        .metric {
+                                font-family: var(--mono);
+                                font-size: 10px;
+                                color: var(--dim);
+                                letter-spacing: .04em
+                        }
+
+                        .metric b {
+                                color: var(--grass)
+                        }
+
+                        .spacer {
+                                flex: 1
+                        }
+
+                        .pill {
+                                display: flex;
+                                align-items: center;
+                                gap: 7px;
+                                font-family: var(--mono);
+                                font-size: 10.5px;
+                                letter-spacing: .06em;
+                                color: var(--dim);
+                                padding: 5px 11px;
+                                border: 1px solid var(--line2);
+                                border-radius: 20px;
+                                background: var(--panel)
+                        }
+
+                        .pill .d {
+                                width: 7px;
+                                height: 7px;
+                                border-radius: 50%;
+                                background: var(--coral);
+                                box-shadow: 0 0 8px var(--coral)
+                        }
+
+                        .pill.on .d {
+                                background: var(--grass);
+                                box-shadow: 0 0 8px var(--grass);
+                                animation: pulse 2s infinite
+                        }
+
+                        @keyframes pulse {
+
+                                0%,
+                                100% {
+                                        opacity: 1
+                                }
+
+                                50% {
+                                        opacity: .4
+                                }
+                        }
+
+                        .btn {
+                                font-family: var(--ui);
+                                font-weight: 600;
+                                font-size: 12.5px;
+                                color: var(--ink);
+                                background: var(--panel2);
+                                border: 1px solid var(--line2);
+                                border-radius: 9px;
+                                padding: 8px 14px;
+                                cursor: pointer;
+                                transition: .18s;
+                                display: flex;
+                                align-items: center;
+                                gap: 7px
+                        }
+
+                        .btn:hover {
+                                transform: translateY(-1px);
+                                border-color: var(--acc);
+                                color: #fff;
+                                box-shadow: 0 6px 16px rgba(var(--acc-rgb), .18)
+                        }
+
+                        .btn:active {
+                                transform: scale(.95)
+                        }
+
+                        .btn.run {
+                                background: linear-gradient(95deg, var(--grass), var(--cyan));
+                                color: #08130f;
+                                border-color: transparent;
+                                font-weight: 700
+                        }
+
+                        .btn.run:hover {
+                                box-shadow: 0 6px 20px rgba(var(--acc-rgb), .4)
+                        }
+
+                        .btn.ai {
+                                background: linear-gradient(95deg, var(--violet), var(--cyan));
+                                color: #0b1014;
+                                border-color: transparent
+                        }
+
+                        .btn svg {
+                                width: 15px;
+                                height: 15px
+                        }
+
+                        select.tmpl {
+                                font-family: var(--mono);
+                                font-size: 11px;
+                                color: var(--ink);
+                                background: var(--panel2);
+                                border: 1px solid var(--line2);
+                                border-radius: 8px;
+                                padding: 7px 10px;
+                                cursor: pointer;
+                                outline: 0
+                        }
+
+                        .work {
+                                flex: 1;
+                                display: grid;
+                                grid-template-columns: 1fr 372px;
+                                min-height: 0
+                        }
+
+                        @media(max-width:1080px) {
+                                .work {
+                                        grid-template-columns: 1fr
+                                }
+
+                                .right {
+                                        position: fixed;
+                                        right: 0;
+                                        top: 60px;
+                                        bottom: 0;
+                                        width: 92%;
+                                        max-width: 420px;
+                                        z-index: 9;
+                                        border-left: 1px solid var(--line);
+                                        box-shadow: -20px 0 50px rgba(0, 0, 0, .5)
+                                }
+                        }
+
+                        /* editor */
+                        .editor-pane {
+                                display: flex;
+                                flex-direction: column;
+                                background: var(--bg2);
+                                border-right: 1px solid var(--line);
+                                min-width: 0
+                        }
+
+                        .etabs {
+                                display: flex;
+                                gap: 2px;
+                                padding: 8px 14px 0;
+                                border-bottom: 1px solid var(--line);
+                                align-items: flex-end
+                        }
+
+                        .etab {
+                                font-family: var(--ui);
+                                font-weight: 600;
+                                font-size: 12px;
+                                color: var(--dim);
+                                background: transparent;
+                                border: 1px solid transparent;
+                                border-bottom: 0;
+                                padding: 8px 14px;
+                                cursor: pointer;
+                                border-radius: 8px 8px 0 0;
+                                transition: .15s;
+                                position: relative
+                        }
+
+                        .etab.on {
+                                color: var(--ink);
+                                background: var(--panel);
+                                border-color: var(--line)
+                        }
+
+                        .etab.on::after {
+                                content: '';
+                                position: absolute;
+                                left: 14px;
+                                right: 14px;
+                                bottom: -1px;
+                                height: 2px;
+                                background: var(--acc);
+                                border-radius: 2px
+                        }
+
+                        .edwrap {
+                                flex: 1;
+                                display: flex;
+                                min-height: 0;
+                                position: relative
+                        }
+
+                        .gutter {
+                                width: 48px;
+                                flex-shrink: 0;
+                                background: var(--bg);
+                                border-right: 1px solid var(--line);
+                                padding: 14px 0;
+                                overflow: hidden;
+                                text-align: right;
+                                font-family: var(--mono);
+                                font-size: 13px;
+                                line-height: 1.62;
+                                color: var(--dim2);
+                                user-select: none
+                        }
+
+                        .gutter span {
+                                display: block;
+                                padding-right: 13px
+                        }
+
+                        .edbox {
+                                flex: 1;
+                                position: relative;
+                                overflow: hidden
+                        }
+
+                        .edbox pre,
+                        .edbox textarea {
+                                margin: 0;
+                                border: 0;
+                                padding: 14px 18px;
+                                font-family: var(--mono);
+                                font-size: 13px;
+                                line-height: 1.62;
+                                white-space: pre;
+                                tab-size: 2
+                        }
+
+                        .edbox pre {
+                                position: absolute;
+                                inset: 0;
+                                overflow: hidden;
+                                pointer-events: none;
+                                color: var(--ink);
+                                z-index: 1
+                        }
+
+                        .edbox textarea {
+                                position: absolute;
+                                inset: 0;
+                                width: 100%;
+                                height: 100%;
+                                overflow: auto;
+                                resize: none;
+                                background: transparent;
+                                color: transparent;
+                                caret-color: var(--acc);
+                                z-index: 2;
+                                outline: 0
+                        }
+
+                        .edbox textarea::selection {
+                                background: rgba(var(--acc-rgb), .26)
+                        }
+
+                        .t-k {
+                                color: var(--cyan);
+                                font-weight: 600
+                        }
+
+                        .t-s {
+                                color: var(--amber)
+                        }
+
+                        .t-c {
+                                color: var(--dim2);
+                                font-style: italic
+                        }
+
+                        .t-n {
+                                color: var(--coral)
+                        }
+
+                        .t-f {
+                                color: var(--grass)
+                        }
+
+                        .preview {
+                                flex: 1;
+                                display: none;
+                                position: relative;
+                                background: radial-gradient(ellipse at 50% 36%, #161d2c, #0a0e1a 76%)
+                        }
+
+                        .preview.on {
+                                display: block
+                        }
+
+                        .preview canvas {
+                                width: 100%;
+                                height: 100%;
+                                display: block
+                        }
+
+                        .prev-hud {
+                                position: absolute;
+                                top: 12px;
+                                left: 14px;
+                                font-family: var(--pix);
+                                font-size: 9px;
+                                letter-spacing: .12em;
+                                color: var(--dim);
+                                line-height: 1.9
+                        }
+
+                        .prev-hud b {
+                                color: var(--grass)
+                        }
+
+                        .statusbar {
+                                display: flex;
+                                align-items: center;
+                                gap: 18px;
+                                padding: 7px 18px;
+                                background: var(--panel);
+                                border-top: 1px solid var(--line);
+                                font-family: var(--mono);
+                                font-size: 10.5px;
+                                color: var(--dim2);
+                                letter-spacing: .03em
+                        }
+
+                        .statusbar b {
+                                color: var(--dim)
+                        }
+
+                        .statusbar .ok {
+                                color: var(--grass)
+                        }
+
+                        /* right rail */
+                        .right {
+                                display: flex;
+                                flex-direction: column;
+                                background: var(--panel);
+                                min-height: 0
+                        }
+
+                        .rtabs {
+                                display: flex;
+                                border-bottom: 1px solid var(--line)
+                        }
+
+                        .rtab {
+                                flex: 1;
+                                font-family: var(--ui);
+                                font-weight: 600;
+                                font-size: 11.5px;
+                                letter-spacing: .03em;
+                                color: var(--dim);
+                                background: transparent;
+                                border: 0;
+                                padding: 11px;
+                                cursor: pointer;
+                                border-bottom: 2px solid transparent;
+                                transition: .15s;
+                                position: relative
+                        }
+
+                        .rtab.on {
+                                color: var(--ink)
+                        }
+
+                        .rtab.on::after {
+                                content: '';
+                                position: absolute;
+                                left: 18%;
+                                right: 18%;
+                                bottom: -1px;
+                                height: 2px;
+                                background: var(--acc);
+                                border-radius: 2px;
+                                animation: slidein .25s ease
+                        }
+
+                        @keyframes slidein {
+                                from {
+                                        transform: scaleX(0)
+                                }
+
+                                to {
+                                        transform: scaleX(1)
+                                }
+                        }
+
+                        .rpane {
+                                flex: 1;
+                                overflow-y: auto;
+                                display: none;
+                                flex-direction: column;
+                                min-height: 0
+                        }
+
+                        .rpane.on {
+                                display: flex
+                        }
+
+                        .console {
+                                padding: 12px 14px;
+                                font-family: var(--mono);
+                                font-size: 12px;
+                                line-height: 1.7;
+                                display: flex;
+                                flex-direction: column;
+                                gap: 2px
+                        }
+
+                        .console .ln {
+                                white-space: pre-wrap;
+                                word-break: break-word;
+                                animation: fadein .3s ease
+                        }
+
+                        @keyframes fadein {
+                                from {
+                                        opacity: 0;
+                                        transform: translateY(5px)
+                                }
+
+                                to {
+                                        opacity: 1;
+                                        transform: none
+                                }
+                        }
+
+                        .console .log {
+                                color: var(--dim)
+                        }
+
+                        .console .out {
+                                color: var(--ink)
+                        }
+
+                        .console .err {
+                                color: var(--coral)
+                        }
+
+                        .console .ai {
+                                color: var(--violet)
+                        }
+
+                        .console .sys {
+                                color: var(--grass);
+                                font-style: italic
+                        }
+
+                        /* ai */
+                        .aimsgs {
+                                flex: 1;
+                                overflow-y: auto;
+                                padding: 14px;
+                                display: flex;
+                                flex-direction: column;
+                                gap: 12px
+                        }
+
+                        .am {
+                                font-size: 13px;
+                                line-height: 1.6;
+                                padding: 10px 13px;
+                                border-radius: 4px 12px 12px 12px;
+                                animation: fadein .35s cubic-bezier(.2, .9, .3, 1)
+                        }
+
+                        .am.u {
+                                align-self: flex-end;
+                                background: rgba(var(--acc-rgb), .13);
+                                border: 1px solid rgba(var(--acc-rgb), .4);
+                                border-radius: 12px 4px 12px 12px;
+                                max-width: 88%
+                        }
+
+                        .am.a {
+                                align-self: flex-start;
+                                background: var(--panel2);
+                                border: 1px solid var(--line);
+                                max-width: 92%
+                        }
+
+                        .am.a pre {
+                                background: var(--bg);
+                                border: 1px solid var(--line);
+                                border-radius: 7px;
+                                padding: 9px 11px;
+                                margin: 8px 0 4px;
+                                overflow-x: auto;
+                                font-family: var(--mono);
+                                font-size: 11.5px;
+                                line-height: 1.6;
+                                color: var(--ink)
+                        }
+
+                        .am .tag {
+                                font-family: var(--pix);
+                                font-size: 8px;
+                                letter-spacing: .16em;
+                                color: var(--violet);
+                                display: block;
+                                margin-bottom: 5px
+                        }
+
+                        .am .apply {
+                                margin-top: 8px;
+                                font-family: var(--ui);
+                                font-weight: 600;
+                                font-size: 11px;
+                                color: #08130f;
+                                background: var(--grass);
+                                border: 0;
+                                border-radius: 6px;
+                                padding: 5px 12px;
+                                cursor: pointer;
+                                transition: .15s
+                        }
+
+                        .am .apply:hover {
+                                box-shadow: 0 4px 12px rgba(123, 224, 138, .4);
+                                transform: translateY(-1px)
+                        }
+
+                        .aibar {
+                                display: flex;
+                                gap: 8px;
+                                padding: 12px;
+                                border-top: 1px solid var(--line)
+                        }
+
+                        .aibar input {
+                                flex: 1;
+                                background: var(--bg2);
+                                border: 1px solid var(--line2);
+                                border-radius: 9px;
+                                padding: 11px 14px;
+                                color: var(--ink);
+                                font-family: var(--ui);
+                                font-size: 13px;
+                                outline: 0;
+                                transition: .2s
+                        }
+
+                        .aibar input:focus {
+                                border-color: var(--acc);
+                                box-shadow: 0 0 0 3px rgba(var(--acc-rgb), .13)
+                        }
+
+                        .aibar button {
+                                width: 42px;
+                                flex-shrink: 0;
+                                border: 0;
+                                border-radius: 9px;
+                                background: linear-gradient(95deg, var(--violet), var(--cyan));
+                                color: #0b1014;
+                                cursor: pointer;
+                                display: grid;
+                                place-items: center;
+                                transition: .18s
+                        }
+
+                        .aibar button:hover {
+                                transform: translateY(-1px);
+                                box-shadow: 0 6px 16px rgba(180, 139, 255, .4)
+                        }
+
+                        .aibar button:active {
+                                transform: scale(.9)
+                        }
+
+                        /* reference docs */
+                        .ref {
+                                padding: 6px 16px 30px
+                        }
+
+                        .ref h3 {
+                                font-family: var(--pix);
+                                font-size: 10px;
+                                letter-spacing: .16em;
+                                color: var(--acc);
+                                margin: 20px 0 9px;
+                                opacity: 0;
+                                transform: translateY(10px);
+                                transition: .5s
+                        }
+
+                        .ref h3.in {
+                                opacity: 1;
+                                transform: none
+                        }
+
+                        .ref .row {
+                                display: flex;
+                                gap: 10px;
+                                padding: 6px 0;
+                                border-bottom: 1px solid var(--line);
+                                font-size: 12px;
+                                line-height: 1.55;
+                                opacity: 0;
+                                transform: translateY(8px);
+                                transition: .5s
+                        }
+
+                        .ref .row.in {
+                                opacity: 1;
+                                transform: none
+                        }
+
+                        .ref .row code {
+                                font-family: var(--mono);
+                                font-size: 11px;
+                                color: var(--cyan);
+                                background: rgba(var(--acc-rgb), .1);
+                                padding: 1px 7px;
+                                border-radius: 5px;
+                                white-space: nowrap;
+                                flex-shrink: 0
+                        }
+
+                        .ref .row span {
+                                color: var(--dim)
+                        }
+
+                        .ref .chips {
+                                display: flex;
+                                flex-wrap: wrap;
+                                gap: 6px;
+                                margin-top: 4px
+                        }
+
+                        .ref .chips b {
+                                font-family: var(--mono);
+                                font-size: 10px;
+                                color: var(--dim);
+                                background: var(--panel2);
+                                border: 1px solid var(--line);
+                                padding: 3px 8px;
+                                border-radius: 6px
+                        }
+
+                        .settings {
+                                padding: 12px 14px;
+                                border-top: 1px solid var(--line);
+                                background: var(--bg2)
+                        }
+
+                        .settings label {
+                                font-family: var(--pix);
+                                font-size: 8px;
+                                letter-spacing: .16em;
+                                color: var(--dim2);
+                                display: block;
+                                margin: 10px 0 6px
+                        }
+
+                        .settings label:first-child {
+                                margin-top: 0
+                        }
+
+                        .settings input,
+                        .settings select {
+                                width: 100%;
+                                background: var(--panel);
+                                border: 1px solid var(--line2);
+                                border-radius: 7px;
+                                padding: 8px 11px;
+                                color: var(--ink);
+                                font-family: var(--mono);
+                                font-size: 11px;
+                                outline: 0
+                        }
+
+                        .settings input:focus,
+                        .settings select:focus {
+                                border-color: var(--acc)
+                        }
+
+                        .settings .hint {
+                                font-family: var(--mono);
+                                font-size: 10px;
+                                color: var(--dim2);
+                                margin-top: 7px;
+                                line-height: 1.6
+                        }
+                </style>
+        </head>
+
+        <body>
+                <svg width="0" height="0" style="position:absolute">
+                        <defs>
+                                <linearGradient id="gO" x1="0" y1="0" x2="1"
+                                        y2="1">
+                                        <stop offset="0" stop-color="#57c6ec" />
+                                        <stop offset="1" stop-color="#7be08a" />
+                                </linearGradient>
+                                <linearGradient id="gI" x1="0" y1="0" x2="1"
+                                        y2="1">
+                                        <stop offset="0" stop-color="#f3b24b" />
+                                        <stop offset="1" stop-color="#b48bff" />
+                                </linearGradient>
+                        </defs>
+                </svg>
+
+                <div class="iso"></div>
+                <div class="sheen"></div>
+                <div class="scan"></div>
+                <div id="voxfield"></div>
+
+                <div class="overlay" id="boot">
+                        <div class="glow"></div>
+                        <div class="logo">
+                                <div class="mark-wrap">
+                                        <div class="ring"></div>
+                                        <div class="mark"><svg
+                                                        viewBox="0 0 48 48"
+                                                        fill="none">
+                                                        <path d="M11 7 L11 41 L41 24 Z"
+                                                                stroke="url(#gO)"
+                                                                stroke-width="2.4"
+                                                                stroke-linejoin="round" />
+                                                        <path d="M19 24 L11 7 M19 24 L11 41 M19 24 L41 24"
+                                                                stroke="url(#gI)"
+                                                                stroke-width="2"
+                                                                stroke-linecap="round" />
+                                                </svg></div>
+                                </div>
+                                <div class="wm">PRISM<small>BLOXD
+                                                WORKBENCH</small></div>
+                        </div>
+                        <div class="ltxt" id="bootTxt">Booting workbench…</div>
+                </div>
+
+                <div class="overlay gone" id="brain">
+                        <div class="glow"></div>
+                        <div class="logo">
+                                <div class="mark-wrap">
+                                        <div class="ring"></div>
+                                        <div class="mark"><svg
+                                                        viewBox="0 0 48 48"
+                                                        fill="none">
+                                                        <path d="M11 7 L11 41 L41 24 Z"
+                                                                stroke="url(#gO)"
+                                                                stroke-width="2.4"
+                                                                stroke-linejoin="round" />
+                                                        <path d="M19 24 L11 7 M19 24 L11 41 M19 24 L41 24"
+                                                                stroke="url(#gI)"
+                                                                stroke-width="2"
+                                                                stroke-linecap="round" />
+                                                </svg></div>
+                                </div>
+                                <div class="wm">PRISM<small>NEURAL
+                                                OPTICS</small></div>
+                        </div>
+                        <div class="bar"><i id="brainFill"></i></div>
+                        <div class="ltxt" id="brainTxt">Warming up the neural
+                                optics…</div>
+                </div>
+
+                <div class="app">
+                        <header class="topbar">
+                                <div class="logo">
+                                        <div class="mark-wrap">
+                                                <div class="ring"></div>
+                                                <div class="mark"><svg
+                                                                viewBox="0 0 48 48"
+                                                                fill="none">
+                                                                <path d="M11 7 L11 41 L41 24 Z"
+                                                                        stroke="url(#gO)"
+                                                                        stroke-width="2.4"
+                                                                        stroke-linejoin="round" />
+                                                                <path d="M19 24 L11 7 M19 24 L11 41 M19 24 L41 24"
+                                                                        stroke="url(#gI)"
+                                                                        stroke-width="2"
+                                                                        stroke-linecap="round" />
+                                                        </svg></div>
+                                        </div>
+                                        <div class="wm">PRISM</div>
+                                </div>
+                                <div class="proj">PROJECT · <b
+                                                id="projName">my_first_build</b>
+                                </div>
+                                <div class="tele"><canvas class="wave" id="wave"
+                                                width="128"
+                                                height="44"></canvas><span
+                                                class="metric"><b id="tps">0</b>
+                                                tok/s</span></div>
+                                <div class="spacer"></div>
+                                <select class="tmpl" id="tmpl"
+                                        title="Load a starter template">
+                                        <option value="blank">＋ Blank</option>
+                                        <option value="join">On player join
+                                        </option>
+                                        <option value="tick">Tick loop</option>
+                                        <option value="chat">Chat command
+                                        </option>
+                                        <option value="shop">Shop + money
+                                        </option>
+                                        <option value="mob">Spawn + tune mob
+                                        </option>
+                                </select>
+                                <div class="pill" id="brainPill"><span
+                                                class="d"></span><span
+                                                id="brainState">PRISM · offline
+                                                helper</span></div>
+                                <button class="btn" id="loadBrainBtn"
+                                        title="Load the Prism brain in this tab (cached after first load)">
+                                        Load brain</button>
+                                <button class="btn ai" id="fixBtn">✦ Fix
+                                        code</button>
+                                <button class="btn run" id="runBtn">▶
+                                        Run</button>
+                        </header>
+
+                        <div class="work">
+                                <section class="editor-pane">
+                                        <div class="etabs">
+                                                <button class="etab on"
+                                                        data-view="code">script.js</button>
+                                                <button class="etab"
+                                                        data-view="preview">voxel
+                                                        preview</button>
+                                        </div>
+                                        <div class="edwrap" id="edwrap">
+                                                <div class="gutter" id="gutter">
+                                                </div>
+                                                <div class="edbox">
+                                                        <pre><code id="backCode"></code></pre>
+                                                        <textarea id="code"
+                                                                spellcheck="false"
+                                                                autocapitalize="off"
+                                                                autocomplete="off"></textarea>
+                                                </div>
+                                        </div>
+                                        <div class="preview" id="preview">
+                                                <canvas id="cv"></canvas>
+                                                <div class="prev-hud">VOXEL
+                                                        PREVIEW<br><b
+                                                                id="blockCount">0</b>
+                                                        blocks
+                                                        placed<br>simulated · y
+                                                        = height</div>
+                                        </div>
+                                        <div class="statusbar">
+                                                <span>agent · <b
+                                                                style="color:var(--violet)">Bloxd
+                                                                Script
+                                                                Editor</b></span>
+                                                <span>lines <b
+                                                                id="stLines">0</b></span>
+                                                <span>blocks <b id="stBlocks"
+                                                                class="ok">0</b></span>
+                                                <span>ES5 lock <b
+                                                                class="ok">on</b></span>
+                                                <span id="stRun">idle</span>
+                                                <span style="margin-left:auto"
+                                                        id="clk">--:--:--</span>
+                                        </div>
+                                </section>
+
+                                <aside class="right">
+                                        <div class="rtabs">
+                                                <button class="rtab on"
+                                                        data-r="console">Console</button>
+                                                <button class="rtab"
+                                                        data-r="ai">Prism
+                                                        AI</button>
+                                                <button class="rtab"
+                                                        data-r="ref">API
+                                                        Ref</button>
+                                        </div>
+
+                                        <div class="rpane on" id="pane-console">
+                                                <div class="console"
+                                                        id="console"></div>
+                                        </div>
+
+                                        <div class="rpane" id="pane-ai">
+                                                <div class="aimsgs" id="aimsgs">
+                                                </div>
+                                                <div class="aibar"><input
+                                                                id="aiinp"
+                                                                placeholder="Ask Prism — e.g. make a money shop"><button
+                                                                id="aisend"><svg
+                                                                        width="16"
+                                                                        height="16"
+                                                                        viewBox="0 0 24 24">
+                                                                        <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"
+                                                                                fill="currentColor" />
+                                                                </svg></button>
+                                                </div>
+                                        </div>
+
+                                        <div class="rpane" id="pane-ref">
+                                                <div class="ref" id="ref"></div>
+                                        </div>
+
+                                        <div class="settings">
+                                                <label>PRISM ENDPOINT
+                                                        (optional)</label>
+                                                <input id="endpoint"
+                                                        placeholder="https://your-prism-worker…/workers.dev">
+                                                <label>LIVE WEB SEARCH</label>
+                                                <select id="searchToggle">
+                                                        <option value="false">
+                                                                off</option>
+                                                        <option value="true">on
+                                                                · DuckDuckGo
+                                                        </option>
+                                                </select>
+                                                <div class="hint">In-script
+                                                        <span
+                                                                style="color:var(--violet)">await
+                                                                prism.ask("…")</span>
+                                                        replaces pollinations.
+                                                        Bloxd answers are forced
+                                                        to ES5.</div>
+                                        </div>
+                                </aside>
+                        </div>
+                </div>
+
+                <script>
+                        /* ============ helpers ============ */
+                        var $ = function(s) {
+                                return document.querySelector(s);
+                        };
+                        var esc = function(s) {
+                                return String(s).replace(/&/g, '&amp;')
+                                        .replace(/</g, '&lt;').replace(
+                                                />/g, '&gt;');
+                        };
+
+                        /* ============ syntax highlight ============ */
+                        function hl(t) {
+                                return esc(t).replace(
+                                        /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')|\b(api|onPlayer\w+|tick|world|player|prism|print|console|var|let|const|function|return|if|else|for|while|await|async|new|true|false|null|undefined|this)\b|\b(\d+(?:\.\d+)?)\b/g,
+                                        function(m, c, s, k, n) {
+                                                return c ?
+                                                        '<span class="t-c">' +
+                                                        c + '</span>' :
+                                                        s ?
+                                                        '<span class="t-s">' +
+                                                        s + '</span>' :
+                                                        k ?
+                                                        '<span class="t-k">' +
+                                                        k + '</span>' :
+                                                        n ?
+                                                        '<span class="t-n">' +
+                                                        n + '</span>' :
+                                                        m;
+                                        }
+                                );
+                        }
+                        var code = $('#code'),
+                                backCode = $('#backCode'),
+                                gutter = $('#gutter'),
+                                back = $('#edwrap').querySelector('pre');
+
+                        function syncEditor() {
+                                backCode.innerHTML = hl(code.value) + '\n';
+                                var n = code.value.split('\n').length;
+                                var h = '';
+                                for (var i = 1; i <= n; i++) h += '<span>' + i +
+                                        '</span>';
+                                gutter.innerHTML = h;
+                                $('#stLines').textContent = n;
+                                if ($('#autoSave').value !== 'false') {
+                                        try {
+                                                localStorage.setItem(
+                                                        'prism_bloxd_code',
+                                                        code.value);
+                                        } catch (e) {}
+                                }
+                        }
+
+                        function syncScroll() {
+                                back.scrollTop = code.scrollTop;
+                                back.scrollLeft = code.scrollLeft;
+                                gutter.scrollTop = code.scrollTop;
+                        }
+                        code.addEventListener('input', syncEditor);
+                        code.addEventListener('scroll', syncScroll);
+                        code.addEventListener('keydown', function(e) {
+                                if (e.key === 'Tab') {
+                                        e.preventDefault();
+                                        insertAtCaret('  ');
+                                }
+                                if ((e.ctrlKey || e.metaKey) &&
+                                        e.key === 'Enter') {
+                                        e.preventDefault();
+                                        run();
+                                }
+                        });
+
+                        function insertAtCaret(t) {
+                                var s = code.selectionStart,
+                                        en = code.selectionEnd,
+                                        v = code.value;
+                                code.value = v.slice(0, s) + t + v.slice(en);
+                                code.selectionStart = code.selectionEnd = s + t
+                                        .length;
+                                syncEditor();
+                                code.focus();
+                        }
+
+                        /* ============ console ============ */
+                        var conEl = $('#console');
+
+                        function clog(msg, type) {
+                                var d = document.createElement('div');
+                                d.className = 'ln ' + (type || 'log');
+                                d.textContent = msg;
+                                conEl.appendChild(d);
+                                conEl.scrollTop = conEl.scrollHeight;
+                        }
+
+                        function fmt(a) {
+                                return typeof a === 'object' ? JSON.stringify(
+                                        a) : String(a);
+                        }
+
+                        /* ============ voxel preview ============ */
+                        var cv = $('#cv'),
+                                ctx = cv.getContext('2d'),
+                                BLOCKS = {};
+                        var BCOL = {
+                                grass: '#6abe30',
+                                stone: '#8b8b8b',
+                                dirt: '#7a5230',
+                                wood: '#b07a3c',
+                                water: '#3a78d8',
+                                sand: '#d8c878',
+                                lava: '#d8542a',
+                                glass: '#9fd8e8',
+                                gold: '#e8c84a',
+                                leaves: '#3f8f2f',
+                                'maple wood planks': '#b07a3c',
+                                'block of diamond': '#7fe6e0',
+                                obsidian: '#241a30',
+                                glass: '#bfe9f2'
+                        };
+
+                        function shade(hex, f) {
+                                var n = parseInt(hex.slice(1), 16),
+                                        r = (n >> 16) & 255,
+                                        g = (n >> 8) & 255,
+                                        b = n & 255;
+                                r = Math.max(0, Math.min(255, r * f | 0));
+                                g = Math.max(0, Math.min(255, g * f | 0));
+                                b = Math.max(0, Math.min(255, b * f | 0));
+                                return 'rgb(' + r + ',' + g + ',' + b + ')';
+                        }
+
+                        function fitCanvas() {
+                                var r = cv.getBoundingClientRect(),
+                                        dpr = Math.min(2, window
+                                                .devicePixelRatio || 1);
+                                cv.width = r.width * dpr;
+                                cv.height = r.height * dpr;
+                                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                                render();
+                        }
+
+                        function render() {
+                                var W = cv.getBoundingClientRect().width,
+                                        H = cv.getBoundingClientRect().height;
+                                ctx.clearRect(0, 0, W, H);
+                                var tw = 26,
+                                        th = 13,
+                                        ch = 16;
+                                var proj = function(x, y, z) {
+                                        return {
+                                                sx: (x - z) * tw / 2,
+                                                sy: (x + z) * th / 2 -
+                                                        y * ch
+                                        };
+                                };
+                                ctx.strokeStyle = 'rgba(255,255,255,.05)';
+                                ctx.lineWidth = 1;
+                                var x, z;
+                                for (x = 0; x <= 8; x++) {
+                                        var a = proj(x, 0, 0),
+                                                b = proj(x, 0, 8);
+                                        ctx.beginPath();
+                                        ctx.moveTo(a.sx, a.sy);
+                                        ctx.lineTo(b.sx, b.sy);
+                                        ctx.stroke();
+                                }
+                                for (z = 0; z <= 8; z++) {
+                                        var c = proj(0, 0, z),
+                                                d = proj(8, 0, z);
+                                        ctx.beginPath();
+                                        ctx.moveTo(c.sx, c.sy);
+                                        ctx.lineTo(d.sx, d.sy);
+                                        ctx.stroke();
+                                }
+                                var entries = [],
+                                        key;
+                                for (key in BLOCKS) {
+                                        var p = key.split(',');
+                                        entries.push({
+                                                x: +p[0],
+                                                y: +p[1],
+                                                z: +p[2],
+                                                c: BLOCKS[key]
+                                        });
+                                }
+                                if (!entries.length) {
+                                        $('#blockCount').textContent = 0;
+                                        $('#stBlocks').textContent = 0;
+                                        return;
+                                }
+                                var mnx = 1e9,
+                                        mxx = -1e9,
+                                        mny = 1e9,
+                                        mxy = -1e9;
+                                for (var i = 0; i < entries.length; i++) {
+                                        var pr = proj(entries[i].x, entries[i]
+                                                .y, entries[i].z);
+                                        mnx = Math.min(mnx, pr.sx - tw);
+                                        mxx = Math.max(mxx, pr.sx + tw);
+                                        mny = Math.min(mny, pr.sy);
+                                        mxy = Math.max(mxy, pr.sy + 2 * th +
+                                        ch);
+                                }
+                                var offX = W / 2 - (mnx + mxx) / 2,
+                                        offY = H / 2 - (mny + mxy) / 2;
+                                entries.sort(function(a, b) {
+                                        return ((a.x + a.z) *
+                                                10 + a.y
+                                                ) - ((b.x +
+                                                        b
+                                                        .z
+                                                        ) *
+                                                10 + b.y
+                                                );
+                                });
+                                for (var j = 0; j < entries.length; j++) {
+                                        var e = entries[j],
+                                                pp = proj(e.x, e.y, e.z),
+                                                sx = pp.sx + offX,
+                                                sy = pp.sy + offY,
+                                                col = BCOL[(e.c || '')
+                                                        .toLowerCase()] ||
+                                                '#888';
+                                        ctx.fillStyle = shade(col, 1.18);
+                                        ctx.beginPath();
+                                        ctx.moveTo(sx, sy);
+                                        ctx.lineTo(sx + tw, sy + th);
+                                        ctx.lineTo(sx, sy + 2 * th);
+                                        ctx.lineTo(sx - tw, sy + th);
+                                        ctx.closePath();
+                                        ctx.fill();
+                                        ctx.fillStyle = shade(col, .78);
+                                        ctx.beginPath();
+                                        ctx.moveTo(sx - tw, sy + th);
+                                        ctx.lineTo(sx, sy + 2 * th);
+                                        ctx.lineTo(sx, sy + 2 * th + ch);
+                                        ctx.lineTo(sx - tw, sy + th + ch);
+                                        ctx.closePath();
+                                        ctx.fill();
+                                        ctx.fillStyle = shade(col, .55);
+                                        ctx.beginPath();
+                                        ctx.moveTo(sx, sy + 2 * th);
+                                        ctx.lineTo(sx + tw, sy + th);
+                                        ctx.lineTo(sx + tw, sy + th + ch);
+                                        ctx.lineTo(sx, sy + 2 * th + ch);
+                                        ctx.closePath();
+                                        ctx.fill();
+                                        ctx.strokeStyle = 'rgba(0,0,0,.35)';
+                                        ctx.lineWidth = 1;
+                                        ctx.beginPath();
+                                        ctx.moveTo(sx, sy);
+                                        ctx.lineTo(sx + tw, sy + th);
+                                        ctx.lineTo(sx + tw, sy + th + ch);
+                                        ctx.lineTo(sx, sy + 2 * th + ch);
+                                        ctx.lineTo(sx - tw, sy + th + ch);
+                                        ctx.lineTo(sx - tw, sy + th);
+                                        ctx.closePath();
+                                        ctx.stroke();
+                                }
+                                $('#blockCount').textContent = entries.length;
+                                $('#stBlocks').textContent = entries.length;
+                        }
+
+                        /* ============ sandbox: simulated Bloxd runtime ============ */
+                        function key(x, y, z) {
+                                return (x | 0) + ',' + (y | 0) + ',' + (z | 0);
+                        }
+                        var world = {
+                                setBlock: function(x, y, z, b) {
+                                        BLOCKS[key(x, y, z)] =
+                                                String(b);
+                                },
+                                clearBlock: function(x, y, z) {
+                                        delete BLOCKS[key(x, y,
+                                                z)];
+                                },
+                                fill: function(x0, z0, x1, z1, y, b) {
+                                        for (var x = Math.min(x0,
+                                                        x1
+                                                        ); x <=
+                                                Math.max(x0,
+                                                x1); x++)
+                                                for (var z = Math
+                                                                .min(z0,
+                                                                        z1); z <=
+                                                        Math
+                                                        .max(z0,
+                                                                z1); z++
+                                                        )
+                                                        BLOCKS[key(x, y,
+                                                                z)] =
+                                                        String(
+                                                                b);
+                                },
+                                clear: function() {
+                                        BLOCKS = {};
+                                }
+                        };
+                        var apiSimLog = 0;
+                        var api = {
+                                setBlock: function(x, y, z, b) {
+                                        BLOCKS[key(x, y, z)] =
+                                                String(b);
+                                },
+                                setBlockRect: function(p1, p2, b) {
+                                        for (var x = Math.min(p1[
+                                                                0],
+                                                        p2[
+                                                                0]
+                                                        ); x <=
+                                                Math.max(p1[0],
+                                                        p2[0]
+                                                        ); x++)
+                                                for (var y = Math
+                                                                .min(p1[1],
+                                                                        p2[
+                                                                                1]
+                                                                        ); y <=
+                                                        Math
+                                                        .max(p1[1],
+                                                                p2[
+                                                                        1]
+                                                                ); y++
+                                                        )
+                                                        for (var z = Math
+                                                                        .min(p1[2],
+                                                                                p2[
+                                                                                        2]
+                                                                                ); z <=
+                                                                Math
+                                                                .max(p1[2],
+                                                                        p2[
+                                                                                2]
+                                                                        ); z++
+                                                                )
+                                                                BLOCKS[key(x, y,
+                                                                        z)] =
+                                                                String(
+                                                                        b);
+                                },
+                                setBlockWalls: function(p1, p2, b) {
+                                        for (var x = Math.min(p1[
+                                                                0],
+                                                        p2[
+                                                                0]
+                                                        ); x <=
+                                                Math.max(p1[0],
+                                                        p2[0]
+                                                        ); x++)
+                                                for (var y = Math
+                                                                .min(p1[1],
+                                                                        p2[
+                                                                                1]
+                                                                        ); y <=
+                                                        Math
+                                                        .max(p1[1],
+                                                                p2[
+                                                                        1]
+                                                                ); y++
+                                                        ) {
+                                                        BLOCKS[key(x, y, p1[
+                                                                        2])] =
+                                                                String(
+                                                                        b);
+                                                        BLOCKS[key(x, y, p2[
+                                                                        2])] =
+                                                                String(
+                                                                        b);
+                                                }
+                                        for (var z = Math.min(p1[
+                                                                2],
+                                                        p2[
+                                                                2]
+                                                        ); z <=
+                                                Math.max(p1[2],
+                                                        p2[2]
+                                                        ); z++)
+                                                for (var y2 = Math
+                                                                .min(p1[1],
+                                                                        p2[
+                                                                                1]
+                                                                        ); y2 <=
+                                                        Math
+                                                        .max(p1[1],
+                                                                p2[
+                                                                        1]
+                                                                ); y2++
+                                                        ) {
+                                                        BLOCKS[key(p1[0], y2,
+                                                                        z)] =
+                                                                String(
+                                                                        b);
+                                                        BLOCKS[key(p2[0], y2,
+                                                                        z)] =
+                                                                String(
+                                                                        b);
+                                                }
+                                },
+                                getBlock: function() {
+                                        return 'Air';
+                                },
+                                setBlockData: function() {},
+                                getBlockData: function() {
+                                        return null;
+                                },
+                                attemptSpawnMob: function(t, x, y, z) {
+                                        apiSimLog++;
+                                        clog('  ⤷ spawn ' + t +
+                                                ' @ ' +
+                                                (x |
+                                                0) +
+                                                ',' + (y |
+                                                        0
+                                                        ) +
+                                                ',' + (z |
+                                                        0
+                                                        ),
+                                                'sys');
+                                        return 'mob_' +
+                                                apiSimLog;
+                                },
+                                setMobSetting: function() {},
+                                despawnMob: function() {},
+                                applyMeleeHit: function() {},
+                                giveItem: function(p, n, a) {
+                                        clog('  ⤷ give ' + (a ||
+                                                        1) +
+                                                'x ' +
+                                                n, 'sys'
+                                                );
+                                },
+                                setItemSlot: function() {},
+                                getHeldItem: function() {
+                                        return null;
+                                },
+                                sendMessage: function(p, m) {
+                                        clog('  ✉ ' + (typeof m ===
+                                                        'string' ?
+                                                        m :
+                                                        '[styled]'
+                                                        ),
+                                                'sys');
+                                },
+                                broadcastMessage: function(m) {
+                                        clog('  📢 ' + (typeof m ===
+                                                        'string' ?
+                                                        m :
+                                                        '[styled]'
+                                                        ),
+                                                'sys');
+                                },
+                                sendFlyingMiddleMessage: function() {},
+                                setVelocity: function() {},
+                                setPosition: function() {},
+                                applyImpulse: function() {},
+                                getPlayerIds: function() {
+                                        return ['p1'];
+                                },
+                                getEntityName: function() {
+                                        return 'Player';
+                                },
+                                getPlayerFacingInfo: function() {
+                                        return {
+                                                dir: [0, 0, 1]
+                                        };
+                                },
+                                getPosition: function() {
+                                        return [0, 1, 0];
+                                },
+                                createShopItem: function() {},
+                                updateShopItemForPlayer: function() {},
+                                configureShopCategory: function() {},
+                                attemptCreateMeshEntity: function() {
+                                        apiSimLog++;
+                                        return 'mesh_' +
+                                                apiSimLog;
+                                },
+                                attemptCreateThrowable: function() {
+                                        return 'thr_' + (++
+                                                apiSimLog
+                                                );
+                                },
+                                playParticleEffect: function() {},
+                                playSound: function() {},
+                                setClientOption: function() {},
+                                setTargetedPlayerSettingForEveryone: function() {},
+                                applyEffect: function() {},
+                                getHealth: function() {
+                                        return 100;
+                                },
+                                setHealth: function() {},
+                                animateEntity: function() {},
+                                setPlayerPose: function() {},
+                                setMoonstoneChestItemSlot: function() {},
+                                getMoonstoneChestItemSlot: function() {
+                                        return null;
+                                },
+                                setLobbyDbValue: function() {},
+                                getLobbyDbValue: function() {
+                                        return null;
+                                },
+                                checkValid: function() {
+                                        return true;
+                                },
+                                addFollowingEntityToPlayer: function() {},
+                                removeFollowingEntityFromPlayer: function() {},
+                                now: function() {
+                                        return Date.now();
+                                },
+                                log: function() {
+                                        clog(Array.prototype
+                                                .slice
+                                                .call(
+                                                        arguments)
+                                                .map(
+                                                        fmt)
+                                                .join(
+                                                        ' '),
+                                                'log');
+                                }
+                        };
+                        var player = {
+                                teleport: function(x, y, z) {
+                                        clog('  » teleport → ' +
+                                                (x |
+                                                0) +
+                                                ',' + (y |
+                                                        0
+                                                        ) +
+                                                ',' + (z |
+                                                        0
+                                                        ),
+                                                'sys');
+                                },
+                                setHeldItem: function(i) {
+                                        clog('  » holding ' + i,
+                                                'sys');
+                                }
+                        };
+                        var prismAPI = {
+                                ask: function(q) {
+                                        return prismAsk(q,
+                                        true);
+                                },
+                                fix: function() {
+                                        return prismAsk('Fix every bug in this script. Return the corrected full ES5 script only.',
+                                                true);
+                                }
+                        };
+
+                        function run() {
+                                conEl.innerHTML = '';
+                                BLOCKS = {};
+                                apiSimLog = 0;
+                                clog('▶ simulated run (syntax + preview). Real execution happens inside Bloxd.io.',
+                                        'sys');
+                                $('#stRun').textContent = 'running…';
+                                var t0 = performance.now();
+                                var con = {
+                                        log: function() {
+                                                clog(Array.prototype
+                                                        .slice
+                                                        .call(
+                                                                arguments)
+                                                        .map(
+                                                                fmt)
+                                                        .join(
+                                                                ' '),
+                                                        'out'
+                                                        );
+                                        },
+                                        error: function() {
+                                                clog(Array.prototype
+                                                        .slice
+                                                        .call(
+                                                                arguments)
+                                                        .map(
+                                                                fmt)
+                                                        .join(
+                                                                ' '),
+                                                        'err'
+                                                        );
+                                        },
+                                        warn: function() {
+                                                clog(Array.prototype
+                                                        .slice
+                                                        .call(
+                                                                arguments)
+                                                        .map(
+                                                                fmt)
+                                                        .join(
+                                                                ' '),
+                                                        'log'
+                                                        );
+                                        }
+                                };
+                                var print = function() {
+                                        con.log.apply(null, arguments);
+                                };
+                                try {
+                                        var fn = new Function('world', 'player',
+                                                'api', 'blocks',
+                                                'print', 'console',
+                                                'prism', 'myId',
+                                                'playerId', 'thisPos',
+                                                'return (async function(){' +
+                                                code.value + '\n})();');
+                                        var maybe = fn(world, player, api, [
+                                                        'stone', 'grass'
+                                                ], print, con, prismAPI,
+                                                'p1', 'p1', [0, 0, 0]);
+                                        if (maybe && maybe.then) {
+                                                maybe.then(finish).catch(err);
+                                        } else {
+                                                finish();
+                                        }
+                                } catch (e) {
+                                        err(e);
+                                }
+
+                                function finish() {
+                                        render();
+                                        clog('✓ ok in ' + (performance.now() -
+                                                        t0).toFixed(0) +
+                                                'ms · ' + Object.keys(
+                                                        BLOCKS).length +
+                                                ' blocks · ' +
+                                                apiSimLog +
+                                                ' api calls', 'sys');
+                                        $('#stRun').innerHTML =
+                                                '<span class="ok">✓ ran ok</span>';
+                                }
+
+                                function err(e) {
+                                        clog('✗ ' + e.message, 'err');
+                                        $('#stRun').innerHTML =
+                                                '<span style="color:var(--coral)">✗ error</span>';
+                                        render();
+                                }
+                        }
+
+                        /* ============ AI ============ */
+                        var HUMAN = ['Warming up the neural optics…',
+                                'Calibrating the spectrum…',
+                                'Polishing the facets…',
+                                'Aligning the light beams…',
+                                'Almost there, focusing…',
+                                'Ready to shine!'
+                        ];
+                        var BLOXD_REF =
+                                'Bloxd code API. ES5 ONLY (var/function/for(var)/string concat; no const/let/=>/template literals). Callbacks: tick, onPlayerJoin, onPlayerLeave, onPlayerClick, onPlayerChat, onPlayerAttemptAltAction, onWorldChangeBlock, onPlayerThrowableHitTerrain, onPlayerDamagingMob, onCreateBloxdMeshEntity, onPlayerFinishQTE, onPlayerBoughtShopItem, doPeriodicSave. Core api: attemptSpawnMob, setMobSetting, giveItem, setItemSlot, setBlock, setBlockRect, setBlockWalls, sendMessage, broadcastMessage, setVelocity, setPosition, getPlayerIds, getHeldItem, getPlayerFacingInfo, createShopItem, updateShopItemForPlayer, attemptCreateMeshEntity, attemptCreateThrowable, playParticleEffect, playSound, setClientOption, setTargetedPlayerSettingForEveryone, applyEffect, animateEntity, setPlayerPose, addQTE, setLobbyDbValue, setPlayerDbValue. prism.ask(prompt) calls Prism AI (NEVER pollinations).';
+                        var brainGen = null;
+
+                        function embedded() {
+                                return window.prismGenerate || (window.parent &&
+                                                window.parent.prismGenerate) ||
+                                        null;
+                        }
+
+                        function addAIMessage(role, content) {
+                                var d = document.createElement('div');
+                                d.className = 'am ' + role;
+                                if (role === 'u') {
+                                        d.textContent = content;
+                                } else {
+                                        var hasCode =
+                                                /api\.|onPlayer|world\.|var |function|for\s*\(/
+                                                .test(content);
+                                        var html =
+                                                '<span class="tag">BLOXD SCRIPT EDITOR</span>' +
+                                                esc(content).replace(/\n/g,
+                                                        '<br>');
+                                        if (hasCode) {
+                                                var m = content.match(
+                                                        /```(?:javascript)?\n?([\s\S]*?)```/
+                                                        );
+                                                if (m) html =
+                                                        '<span class="tag">BLOXD SCRIPT EDITOR</span><pre>' +
+                                                        esc(m[1]) + '</pre>';
+                                        }
+                                        d.innerHTML = html;
+                                        if (hasCode) {
+                                                var b = document.createElement(
+                                                        'button');
+                                                b.className = 'apply';
+                                                b.textContent =
+                                                        'Apply to editor';
+                                                b.onclick = function() {
+                                                        var pre = d
+                                                                .querySelector(
+                                                                        'pre'
+                                                                        );
+                                                        if (pre) {
+                                                                code.value =
+                                                                        pre
+                                                                        .textContent;
+                                                                syncEditor
+                                                                        ();
+                                                                syncScroll
+                                                                        ();
+                                                                clog('✓ applied Prism suggestion',
+                                                                        'ai'
+                                                                        );
+                                                        }
+                                                };
+                                                d.appendChild(b);
+                                        }
+                                }
+                                $('#aimsgs').appendChild(d);
+                                $('#aimsgs').scrollTop = $('#aimsgs')
+                                        .scrollHeight;
+                                return d;
+                        }
+
+                        /* offline ES5 generator — real Bloxd API names + real block/item names */
+                        function offlineES5(q) {
+                                var s = q.toLowerCase();
+                                if (/jump|velocity/.test(s))
+                                return "onPlayerClick = function(playerId){\n  api.setVelocity(playerId, 0, 9, 0);\n  api.sendMessage(playerId, \"Boing!\", {color: \"lime\"});\n};";
+                                if (/spawn|zombie|mob/.test(s))
+                                return "var m = api.attemptSpawnMob(\"Draugr Zombie\", 1, 1, 1);\napi.setMobSetting(m, \"initialHealth\", 120);\napi.setMobSetting(m, \"attackRadius\", 10);\napi.setMobSetting(m, \"attackItemName\", \"Toxin Ball\");\napi.setMobSetting(m, \"name\", \"My Mob\");";
+                                if (/house|build|wall|floor|tower/.test(s))
+                                        return "api.setBlockRect([0,0,0], [4,0,4], \"Stone\");          // floor\napi.setBlockWalls([0,1,0], [4,3,4], \"Stone\", false, false); // walls\napi.setBlockRect([0,4,0], [4,4,4], \"Maple Wood Planks\"); // roof\napi.setBlock(2, 1, 0, \"Glass\");                          // window";
+                                if (/give|item/.test(s))
+                                return "var pid = api.getPlayerIds()[0];\napi.giveItem(pid, \"Diamond Sword\", 1, {customDisplayName: \"Excalibur\", customAttributes: {enchantmentTier: \"Tier 5\"}});";
+                                if (/command|chat|!/.test(s))
+                                return "onPlayerChat = function(playerId, msg){\n  msg = msg.trim();\n  if(msg === \"!heal\"){ api.setHealth(playerId, 100); api.sendMessage(playerId, \"Healed\", {color: \"red\"}); return false; }\n  if(msg === \"!bal\"){ api.sendMessage(playerId, \"hi\", {color: \"#00FF00\"}); return false; }\n};";
+                                if (/shop|money|buy|sell/.test(s))
+                                return "var SHOP = {\"Stone\": {api: \"Stone\", buy: 10, sell: 5}, \"Diamond\": {api: \"Diamond\", buy: 175, sell: 125}};\nfunction stats(p){ var s = api.getMoonstoneChestItemSlot(p, 0); var a = (s && s.attributes && s.attributes.customAttributes) ? s.attributes.customAttributes : {}; return {money: Number(a.money) || 0}; }\nfunction setStats(p, st){ api.setMoonstoneChestItemSlot(p, 0, \"Dirt\", 1, {customAttributes: {money: st.money}}); }\nonPlayerChat = function(p, msg){\n  if(msg.indexOf(\"!buy \") === 0){ var parts = msg.split(\" \"); var it = SHOP[parts.slice(1).join(\" \")]; var st = stats(p);\n    if(!it){ api.sendMessage(p, \"not in shop\", {color: \"red\"}); return false; }\n    if(st.money < it.buy){ api.sendMessage(p, \"need $\" + it.buy, {color: \"red\"}); return false; }\n    api.giveItem(p, it.api, 1); st.money -= it.buy; setStats(p, st); api.sendMessage(p, \"bought\", {color: \"#00FF00\"}); return false; }\n};";
+                                if (/teleport/.test(s))
+                                return "onPlayerClick = function(playerId){\n  var face = api.getPlayerFacingInfo(playerId);\n  var pos = api.getPosition(playerId);\n  api.setPosition(playerId, pos[0] + face.dir[0]*10, pos[1], pos[2] + face.dir[2]*10);\n};";
+                                if (/npc|talk|dialogue/.test(s))
+                                return "var npcs = {}, convo = {};\nfunction makeNpc(x,y,z,name,lines){ var id = api.attemptCreateMeshEntity(\"Person\", {skin: \"BloxdGuy\", pose: \"standing\", isTargetable: true}, name); if(id){ api.setPosition(id, x, y, z); npcs[id] = {name: name, lines: lines}; } }\nonPlayerJoin = function(p){ if(Object.keys(npcs).length === 0) makeNpc(100,5,100, \"Merchant\", [\"Welcome.\", \"I trade diamonds.\"]); };\nonPlayerAltAction = function(p,x,y,z,b,e){ if(npcs[e]){ var c = convo[p] || {npc: null, i: 0}; if(c.npc !== e || c.i >= npcs[e].lines.length) c = {npc: e, i: 0}; api.sendMessage(p, \"[\" + npcs[e].name + \"]: \" + npcs[e].lines[c.i]); c.i++; convo[p] = c; } };";
+                                if (/particle|effect/.test(s))
+                                return "var t = [0,1,0];\napi.playParticleEffect({texture: \"critical_hit\", pos1: [t[0],t[1],t[2]], pos2: [t[0]+1,t[1]+1,t[2]+1], minLifeTime: 0.2, maxLifeTime: 0.6, minEmitPower: 2, maxEmitPower: 2, minSize: 0.25, maxSize: 0.5, gravity: [0,-10,0], manualEmitCount: 20, blendMode: 1});";
+                                if (/sound/.test(s))
+                                return "api.playSound(playerId, \"cannonFire1\", 1.0, 1.0, {playerIdOrPos: playerId, maxHearDist: 30, refDistance: 4});";
+                                if (/heal|health/.test(s))
+                                return "api.setHealth(playerId, 100);\napi.sendMessage(playerId, \"Healed\", {color: \"red\"});";
+                                if (/anim|walk|fall/.test(s))
+                                return "tick = function(ms){\n  var ids = api.getPlayerIds();\n  for(var i = 0; i < ids.length; i++){\n    var v = api.getVelocity(ids[i]);\n    if(v[0]*v[0] + v[2]*v[2] > 0.01){\n      api.animateEntity(ids[i], {animationDurationMs: 800, loop: true, nodeAnimations: {ArmRightMesh: {timeline: [{timeFraction:0, rotation:{point:[0.5,0,-0.07]}}, {timeFraction:0.5, rotation:{point:[-0.5,0,-0.07]}}, {timeFraction:1, rotation:{point:[0.5,0,-0.07]}}]}}}, 0, 1.0);\n    }\n  }\n};";
+                                if (/name|idea|theme/.test(s))
+                                return "// ask Prism for a generated name:\nvar name = await prism.ask(\"give this build a cool name\");\napi.broadcastMessage(name, {color: \"aqua\"});";
+                                if (/help|what can/.test(s))
+                                return "I write ES5 Bloxd code. Try: build a house, spawn a zombie, make a money shop, add a !heal command, talking npc, teleport on click, particle burst, custom walk animation.";
+                                return "// describe what you want and I'll write the ES5 Bloxd code.\n// e.g. \"spawn 3 zombies that drop gold\" or \"make a !bal command\"";
+                        }
+
+                        async function prismAsk(q, withCode) {
+                                var emb = embedded();
+                                var prompt = (withCode ?
+                                                'Current script:\n```\n' +
+                                                code.value + '\n```\n' :
+                                                '') + BLOXD_REF +
+                                        '\nUser: ' + q +
+                                        '\nAnswer with runnable ES5 Bloxd code only unless asked otherwise.';
+                                if (emb) {
+                                        try {
+                                                var r = await emb(
+                                                        prompt,
+                                                        'bloxd');
+                                                if (r) return r;
+                                        } catch (e) {}
+                                }
+                                var ep = $('#endpoint').value.trim();
+                                if (ep) {
+                                        try {
+                                                var res = await fetch(
+                                                        ep, {
+                                                                method: 'POST',
+                                                                headers: {
+                                                                        'Content-Type': 'application/json'
+                                                                },
+                                                                body: JSON
+                                                                        .stringify({
+                                                                                message: prompt,
+                                                                                persona: 'bloxd'
+                                                                        })
+                                                        });
+                                                var d = await res
+                                        .json();
+                                                return d.reply || d
+                                                        .text || JSON
+                                                        .stringify(d);
+                                        } catch (e) {
+                                                return '⚠ endpoint unreachable: ' +
+                                                        e.message;
+                                        }
+                                }
+                                if (brainGen) {
+                                        try {
+                                                var o = await brainGen(
+                                                        '<|im_start|>system\n' +
+                                                        BLOXD_REF +
+                                                        '<|im_end|>\n<|im_start|>user\n' +
+                                                        q +
+                                                        '<|im_end|>\n<|im_start|>assistant\n', {
+                                                                max_new_tokens: 240,
+                                                                temperature: .6
+                                                        });
+                                                var g = o[0]
+                                                        .generated_text;
+                                                return g.split(
+                                                                '<|im_start|>assistant\n')
+                                                        .pop().trim() ||
+                                                        g;
+                                        } catch (e) {}
+                                }
+                                return offlineES5(q);
+                        }
+
+                        async function sendToAI() {
+                                var inp = $('#aiinp'),
+                                        q = inp.value.trim();
+                                if (!q) return;
+                                inp.value = '';
+                                addAIMessage('u', q);
+                                var searchOn = $('#searchToggle')
+                                        .value === 'true',
+                                        ctx2 = '';
+                                if (searchOn) {
+                                        try {
+                                                var sr = await fetch(
+                                                        'https://api.duckduckgo.com/?q=' +
+                                                        encodeURIComponent(
+                                                                'Bloxd.io ' +
+                                                                q
+                                                                ) +
+                                                        '&format=json&no_html=1'
+                                                        );
+                                                var sd = await sr
+                                        .json();
+                                                if (sd.AbstractText)
+                                                        ctx2 =
+                                                        '\n\nLIVE CONTEXT: ' +
+                                                        sd.AbstractText;
+                                        } catch (e) {}
+                                }
+                                var thinking = addAIMessage('a',
+                                        'thinking…');
+                                var ans = await prismAsk(q + ctx2,
+                                true);
+                                thinking.remove();
+                                addAIMessage('a', ans);
+                        }
+                        $('#aisend').onclick = sendToAI;
+                        $('#aiinp').addEventListener('keydown', function(e) {
+                                if (e.key === 'Enter')
+                                sendToAI();
+                        });
+                        $('#fixBtn').onclick = function() {
+                                switchRight('ai');
+                                addAIMessage('u',
+                                        'Fix every bug in my script (ES5).'
+                                        );
+                                var t = addAIMessage('a', 'scanning…');
+                                prismAPI.fix().then(function(ans) {
+                                        t.remove();
+                                        addAIMessage('a',
+                                                ans
+                                                );
+                                });
+                        };
+
+                        /* opt-in in-tab brain */
+                        $('#loadBrainBtn').onclick = async function() {
+                                if (brainGen || embedded()) {
+                                        clog('Prism already available.',
+                                                'sys');
+                                        return;
+                                }
+                                var ov = $('#brain'),
+                                        fill = $('#brainFill'),
+                                        txt = $('#brainTxt');
+                                ov.classList.remove('gone');
+                                txt.textContent = HUMAN[0];
+                                try {
+                                        var mod = await import(
+                                                'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/+esm'
+                                                );
+                                        mod.env.allowRemoteModels =
+                                                true;
+                                        brainGen = await mod
+                                                .pipeline(
+                                                        'text-generation',
+                                                        'EvanthehelperYT/prism-moe-brain/prism-moe-q4_k_m.gguf', {
+                                                                quantized: true,
+                                                                device: 'webgpu',
+                                                                progress_callback: function(
+                                                                        d
+                                                                        ) {
+                                                                        if (d.status ===
+                                                                                'progress'
+                                                                                ) {
+                                                                                var p = Math
+                                                                                        .round(d.loaded /
+                                                                                                d
+                                                                                                .total *
+                                                                                                100
+                                                                                                );
+                                                                                fill.style
+                                                                                        .width =
+                                                                                        p +
+                                                                                        '%';
+                                                                                txt.textContent =
+                                                                                        HUMAN[Math
+                                                                                                .min(Math
+                                                                                                        .floor(p /
+                                                                                                                20
+                                                                                                                ),
+                                                                                                        HUMAN
+                                                                                                        .length -
+                                                                                                        1
+                                                                                                        )
+                                                                                                ];
+                                                                        } else if (
+                                                                                d
+                                                                                .status ===
+                                                                                'done'
+                                                                                ) {
+                                                                                txt.textContent =
+                                                                                        HUMAN[HUMAN
+                                                                                                .length -
+                                                                                                1
+                                                                                                ];
+                                                                                fill.style
+                                                                                        .width =
+                                                                                        '100%';
+                                                                        }
+                                                                }
+                                                        });
+                                        setBrain('on',
+                                                'PRISM · brain loaded');
+                                        setTimeout(function() {
+                                                ov.classList
+                                                        .add(
+                                                                'gone');
+                                        }, 700);
+                                        clog('✓ Prism brain loaded in tab.',
+                                                'ai');
+                                } catch (e) {
+                                        txt.textContent =
+                                                'WebGPU failed — try Chrome/Edge. (' +
+                                                e.message + ')';
+                                        setBrain('',
+                                                'PRISM · load failed');
+                                        setTimeout(function() {
+                                                ov.classList
+                                                        .add(
+                                                                'gone');
+                                        }, 2600);
+                                }
+                        };
+
+                        function setBrain(cls, label) {
+                                var p = $('#brainPill');
+                                p.className = 'pill ' + cls;
+                                $('#brainState').textContent = label;
+                        }
+                        if (embedded()) setBrain('on',
+                        'PRISM · embedded brain');
+
+                        /* ============ tabs / views ============ */
+                        function switchRight(which) {
+                                var tabs = document.querySelectorAll('.rtab');
+                                for (var i = 0; i < tabs.length; i++) tabs[i]
+                                        .classList.toggle('on', tabs[i]
+                                                .getAttribute('data-r') ===
+                                                which);
+                                var panes = document.querySelectorAll('.rpane');
+                                for (var j = 0; j < panes.length; j++) panes[j]
+                                        .classList.toggle('on', panes[j].id ===
+                                                'pane-' + which);
+                                if (which === 'ref') revealRef();
+                        }
+                        var rtabs = document.querySelectorAll('.rtab');
+                        for (var ri = 0; ri < rtabs.length; ri++) rtabs[ri]
+                                .onclick = function() {
+                                        switchRight(this.getAttribute(
+                                        'data-r'));
+                                };
+                        var etabs = document.querySelectorAll('.etab');
+                        for (var ei = 0; ei < etabs.length; ei++) etabs[ei]
+                                .onclick = function() {
+                                        for (var k = 0; k < etabs.length; k++)
+                                                etabs[k].classList.toggle('on',
+                                                        etabs[k] === this);
+                                        var v = this.getAttribute('data-view');
+                                        $('#edwrap').style.display = v ===
+                                                'code' ? 'flex' : 'none';
+                                        $('#preview').classList.toggle('on',
+                                                v === 'preview');
+                                        if (v === 'preview') fitCanvas();
+                                };
+                        $('#runBtn').onclick = run;
+
+                        /* ============ templates ============ */
+                        var TMPL = {
+                                blank: '// Prism · Bloxd Script Editor  (ES5 only)\n// Real execution happens inside Bloxd.io. Run = syntax + preview.\n\n',
+                                join: 'onPlayerJoin = function(playerId){\n  api.sendMessage(playerId, \"Welcome!\", {color: \"lime\"});\n  api.giveItem(playerId, \"Diamond Sword\", 1);\n};\n',
+                                tick: 'tick = function(ms){\n  // 20 times per second\n  var ids = api.getPlayerIds();\n  for(var i = 0; i < ids.length; i++){\n    // your per-tick logic\n  }\n};\n',
+                                chat: 'onPlayerChat = function(playerId, msg){\n  msg = msg.trim();\n  if(msg === \"!help\"){ api.sendMessage(playerId, \"commands: !help !heal\", {color: \"aqua\"}); return false; }\n  if(msg === \"!heal\"){ api.setHealth(playerId, 100); return false; }\n};\n',
+                                shop: 'var SHOP = {\"Diamond\": {api: \"Diamond\", buy: 175, sell: 125}};\nfunction stats(p){ var s = api.getMoonstoneChestItemSlot(p, 0); var a = (s && s.attributes && s.attributes.customAttributes) ? s.attributes.customAttributes : {}; return {money: Number(a.money) || 0}; }\nfunction setStats(p, st){ api.setMoonstoneChestItemSlot(p, 0, \"Dirt\", 1, {customAttributes: {money: st.money}}); }\nonPlayerChat = function(p, msg){\n  if(msg === \"!bal\"){ api.sendMessage(p, \"$\" + stats(p).money, {color: \"#00FF00\"}); return false; }\n};\n',
+                                mob: 'var m = api.attemptSpawnMob(\"Draugr Zombie\", 1, 1, 1);\napi.setMobSetting(m, \"initialHealth\", 200);\napi.setMobSetting(m, \"attackRadius\", 12);\napi.setMobSetting(m, \"attackItemName\", \"Super RPG\");\napi.setMobSetting(m, \"name\", \"Boss\");\n'
+                        };
+                        $('#tmpl').onchange = function() {
+                                code.value = TMPL[this.value] || '';
+                                syncEditor();
+                                syncScroll();
+                                code.focus();
+                        };
+
+                        /* ============ reference docs panel ============ */
+                        var REF = {
+                                "Callbacks (assign a function in world code)": [
+                                        ["tick",
+                                                "every tick, 20×/sec; arg ms"],
+                                        ["onPlayerJoin",
+                                                "player enters; arg playerId"
+                                        ],
+                                        ["onPlayerLeave",
+                                                "player leaves; arg playerId"
+                                        ],
+                                        ["onPlayerClick",
+                                                "click; args playerId, wasAlt, x,y,z, block, targetEId"
+                                        ],
+                                        ["onPlayerAttemptAltAction",
+                                                "right-click before action; return 'preventAction'"
+                                        ],
+                                        ["onPlayerChat",
+                                                "chat; return false to suppress, string to prefix"
+                                        ],
+                                        ["onPlayerChangeBlock",
+                                                "block changed; return 'preventChange'/'preventDrop'"
+                                        ],
+                                        ["onWorldChangeBlock",
+                                                "world-initiated change (sapling grows)"
+                                        ],
+                                        ["onPlayerDamagingMob",
+                                                "return 'preventDamage' or a number"
+                                        ],
+                                        ["onPlayerThrowableHitTerrain",
+                                                "projectile hit terrain"
+                                        ],
+                                        ["onCreateBloxdMeshEntity",
+                                                "mesh entity created"
+                                        ],
+                                        ["onPlayerFinishQTE",
+                                                "QTE result (bool)"
+                                        ],
+                                        ["onPlayerBoughtShopItem",
+                                                "after a shop purchase"
+                                        ],
+                                        ["doPeriodicSave",
+                                                "save your db values here"
+                                        ],
+                                        ["onClose",
+                                                "lobby shutting down"
+                                        ]
+                                ],
+                                "Core api.* methods": [
+                                        ["attemptSpawnMob(type,x,y,z,opts)",
+                                                "-> MobId|null; don't call in spawn callbacks"
+                                        ],
+                                        ["setMobSetting(id,setting,val)",
+                                                "initialHealth, attackRadius, attackItemName, name…"
+                                        ],
+                                        ["giveItem(p,name,amt,attr?)",
+                                                "attr can hold customDisplayName / customAttributes"
+                                        ],
+                                        ["setItemSlot(p,idx,name,amt?,attr?)",
+                                                "idx 0-9; 'Air' clears"
+                                        ],
+                                        ["setBlock / setBlockRect / setBlockWalls",
+                                                "place blocks; rect & walls take [x,y,z] corners"
+                                        ],
+                                        ["setBlockData / getBlockData",
+                                                "performant per-block data; cleared on change"
+                                        ],
+                                        ["sendMessage / broadcastMessage",
+                                                "style={color,fontWeight}; supports CustomTextStyling"
+                                        ],
+                                        ["setVelocity(id,0,9,0)",
+                                                "a jump"
+                                        ],
+                                        ["setPosition(id,x,y,z)",
+                                                "teleport"
+                                        ],
+                                        ["getPlayerIds / getHeldItem / getPlayerFacingInfo",
+                                                "read player state; facing.dir = aim vector"
+                                        ],
+                                        ["createShopItem / updateShopItemForPlayer",
+                                                "shop UI; per-player userInput overrides"
+                                        ],
+                                        ["attemptCreateMeshEntity(type,opts)",
+                                                "Box|BloxdBlock|Person|ParticleEmitter -> id|null"
+                                        ],
+                                        ["attemptCreateThrowable(thrower,item,pos,dir,…)",
+                                                "projectile with engine physics"
+                                        ],
+                                        ["playParticleEffect(opts)",
+                                                "texture or presetId, pos1/pos2, gravity, colorGradients"
+                                        ],
+                                        ["playSound(p,name,vol,rate,pos?)",
+                                                "pos={playerIdOrPos,maxHearDist,refDistance}"
+                                        ],
+                                        ["setClientOption(p,option,val)",
+                                                "speedMultiplier, airJumpCount, maxHealth, music, skyBox…"
+                                        ],
+                                        ["setTargetedPlayerSettingForEveryone",
+                                                "'opacity', 'nameTagInfo' for one player, seen by all"
+                                        ],
+                                        ["animateEntity(id,schema|null,…)",
+                                                "node keys: TorsoNode, HeadMesh, Arm*/Leg*Mesh"
+                                        ],
+                                        ["addQTE(p,{type,parameters})",
+                                                "progressBar|timedClick|gravityBar|precisionBar|rhythmClick"
+                                        ],
+                                        ["setLobbyDbValue / setPlayerDbValue",
+                                                "persist across sessions"
+                                        ],
+                                        ["isNearInterrupt()",
+                                                "break long loops when true"
+                                        ]
+                                ],
+                                "Sample valid block names": null,
+                                "Sample valid item names": null,
+                                "Mob settings you can tune": null,
+                                "Particle textures & presets": null
+                        };
+                        var BLOCK_SAMPLE = ["Stone", "Grass Block",
+                                "Maple Wood Planks", "Glass",
+                                "Block of Diamond", "Obsidian",
+                                "Bedrock", "Moonstone Explosive",
+                                "Water", "Lava", "Glowing Mushroom",
+                                "White Wool", "Maple Door", "Chest",
+                                "Moonstone Chest", "Beacon", "Torch",
+                                "White Concrete", "Block of Gold",
+                                "Cherry Wood Planks",
+                                "Spectral Wood Planks", "Magma",
+                                "Bookshelf"
+                        ];
+                        var ITEM_SAMPLE = ["Diamond Sword", "Diamond Crossbow",
+                                "AK-47", "AWP", "RPG", "Super RPG",
+                                "Fireball", "Wood Spear",
+                                "Moonstone Pickaxe", "Gold Coin",
+                                "Diamond", "Name Tag", "Draugr Rod",
+                                "Cursed Rod", "Aura XP Fragment",
+                                "Arrow of Aura XP", "Arrow of Shield",
+                                "Speed Potion", "Shield Potion", "Boat",
+                                "Wood Hang Glider"
+                        ];
+                        var MOB_SAMPLE = ["initialHealth", "maxHealth",
+                                "attackRadius", "attackInterval",
+                                "attackItemName", "heldItemName",
+                                "baseWalkingSpeed", "baseRunningSpeed",
+                                "hostilityRadius", "chaseRadius",
+                                "name", "onDeathItemDrops", "jumpCount",
+                                "isRideable"
+                        ];
+                        var PART_SAMPLE = ["critical_hit", "bubble", "heart",
+                                "soul_0", "square_particle", "glint",
+                                "drift", "preset: aura",
+                                "preset: speedOuter",
+                                "preset: damageOuter",
+                                "preset: poisonedOuter",
+                                "preset: mobTameSuccess"
+                        ];
+
+                        function buildRef() {
+                                var html = '',
+                                        sec;
+                                for (sec in REF) {
+                                        html += '<h3>' + esc(sec) + '</h3>';
+                                        if (REF[sec]) {
+                                                for (var i = 0; i < REF[sec]
+                                                        .length; i++) html +=
+                                                        '<div class="row"><code>' +
+                                                        esc(REF[sec][i][0]) +
+                                                        '</code><span>' + esc(
+                                                                REF[sec][i][1]
+                                                                ) +
+                                                        '</span></div>';
+                                        } else {
+                                                var list = sec.indexOf(
+                                                        'block') >= 0 ?
+                                                        BLOCK_SAMPLE : sec
+                                                        .indexOf('item') >= 0 ?
+                                                        ITEM_SAMPLE : sec
+                                                        .indexOf('Mob') >= 0 ?
+                                                        MOB_SAMPLE :
+                                                        PART_SAMPLE;
+                                                html += '<div class="chips">';
+                                                for (var c = 0; c < list
+                                                        .length; c++) html +=
+                                                        '<b>' + esc(list[c]) +
+                                                        '</b>';
+                                                html += '</div>';
+                                        }
+                                }
+                                $('#ref').innerHTML = html;
+                        }
+
+                        function revealRef() {
+                                var els = $('#ref').querySelectorAll(
+                                'h3, .row');
+                                if (!('IntersectionObserver' in window)) {
+                                        for (var i = 0; i < els.length; i++)
+                                                els[i].classList.add('in');
+                                        return;
+                                }
+                                var io = new IntersectionObserver(function(es) {
+                                        es.forEach(function(e) {
+                                                if (e
+                                                        .isIntersecting) {
+                                                        e.target.classList
+                                                                .add(
+                                                                        'in');
+                                                        io.unobserve(e
+                                                                .target);
+                                                }
+                                        });
+                                }, {
+                                        threshold: .15
+                                });
+                                for (var j = 0; j < els.length; j++) io.observe(
+                                        els[j]);
+                        }
+
+                        /* ============ telemetry waveform + clock ============ */
+                        (function() {
+                                var wc = $('#wave'),
+                                        wx = wc.getContext('2d'),
+                                        phase = 0;
+
+                                function draw() {
+                                        wx.clearRect(0, 0, 128, 44);
+                                        wx.lineWidth = 1.6;
+                                        wx.strokeStyle =
+                                                'rgba(87,198,236,.85)';
+                                        wx.beginPath();
+                                        for (var x = 0; x < 128; x++) {
+                                                var y = 22 + Math.sin((x +
+                                                                        phase
+                                                                        ) *
+                                                                0.18) *
+                                                        8 * Math.sin((x +
+                                                                        phase
+                                                                        ) *
+                                                                0.05) +
+                                                        Math.sin((x +
+                                                                        phase) *
+                                                                0.5) *
+                                                        3;
+                                                if (x === 0) wx.moveTo(
+                                                        x, y);
+                                                else wx.lineTo(x, y);
+                                        }
+                                        wx.stroke();
+                                        phase += 2;
+                                        requestAnimationFrame(draw);
+                                }
+                                draw();
+                                setInterval(function() {
+                                        var base =
+                                                embedded() ||
+                                                brainGen ?
+                                                42 : 18;
+                                        $('#tps')
+                                                .textContent =
+                                                base +
+                                                Math
+                                                .floor(Math
+                                                        .random() *
+                                                        9
+                                                        );
+                                }, 900);
+                                setInterval(function() {
+                                        $('#clk')
+                                                .textContent =
+                                                new Date()
+                                                .toLocaleTimeString(
+                                                        [], {
+                                                                hour12: false
+                                                        }
+                                                        );
+                                }, 1000);
+                        })();
+
+                        /* ============ ambient voxels ============ */
+                        (function() {
+                                var f = $('#voxfield'),
+                                        cols = ['#7be08a', '#57c6ec',
+                                                '#f3b24b', '#b48bff'
+                                        ];
+                                for (var i = 0; i < 7; i++) {
+                                        var v = document.createElement(
+                                                'div');
+                                        v.className = 'vox';
+                                        v.style.setProperty('--vc',
+                                                cols[i % 4]);
+                                        v.style.setProperty('--d', (14 +
+                                                        Math
+                                                        .random() *
+                                                        16) +
+                                                's');
+                                        v.style.left = (6 + Math
+                                        .random() * 86) + '%';
+                                        v.style.top = (8 + Math
+                                        .random() * 80) + '%';
+                                        v.style.opacity = (.07 + Math
+                                                .random() * .1);
+                                        v.innerHTML =
+                                                '<i></i><i></i><i></i>';
+                                        f.appendChild(v);
+                                }
+                        })();
+
+                        /* ============ settings persistence ============ */
+                        var settingsHTML =
+                                '<label id="autoSaveLbl">AUTO-SAVE</label><select id="autoSave"><option value="true">on</option><option value="false">off</option></select>';
+                        $('.settings').insertAdjacentHTML('afterbegin',
+                                settingsHTML);
+                        try {
+                                var saved = localStorage.getItem(
+                                        'prism_bloxd_settings');
+                                if (saved) {
+                                        var sj = JSON.parse(saved);
+                                        if (sj.ep) $('#endpoint').value = sj.ep;
+                                        if (sj.search) $('#searchToggle')
+                                                .value = sj.search;
+                                        if (sj.auto) $('#autoSave').value = sj
+                                                .auto;
+                                }
+                                var savedCode = localStorage.getItem(
+                                        'prism_bloxd_code');
+                        } catch (e) {
+                                var savedCode = null;
+                        }
+
+                        function persistSettings() {
+                                try {
+                                        localStorage.setItem(
+                                                'prism_bloxd_settings',
+                                                JSON.stringify({
+                                                        ep: $('#endpoint')
+                                                                .value,
+                                                        search: $(
+                                                                        '#searchToggle')
+                                                                .value,
+                                                        auto: $('#autoSave')
+                                                                .value
+                                                }));
+                                } catch (e) {}
+                        }
+                        $('#endpoint').addEventListener('change',
+                                persistSettings);
+                        $('#searchToggle').addEventListener('change',
+                                persistSettings);
+                        $('#autoSave').addEventListener('change',
+                                persistSettings);
+
+                        /* ============ boot ============ */
+                        buildRef();
+                        var START = TMPL.join;
+                        code.value = (savedCode != null && savedCode !== '') ?
+                                savedCode : START;
+                        syncEditor();
+                        syncScroll();
+                        var bootMsgs = ['Loading editor…',
+                                'Wiring voxel preview…',
+                                'Mounting API reference…',
+                                'Connecting Prism…', 'Workbench ready.'
+                        ];
+                        var bi = 0;
+                        var bootInt = setInterval(function() {
+                                bi++;
+                                if (bi < bootMsgs.length) $(
+                                                '#bootTxt')
+                                        .textContent = bootMsgs[
+                                                bi];
+                        }, 360);
+                        setTimeout(function() {
+                                clearInterval(bootInt);
+                                $('#boot').classList.add(
+                                'gone');
+                                clog('Prism · Bloxd Script Editor online.',
+                                        'sys');
+                                clog('ES5 lock ON for Bloxd answers. prism.ask("…") replaces pollinations.',
+                                        'sys');
+                                clog('Tip: Ctrl/Cmd + Enter runs. The API Ref tab has the full cheat sheet.',
+                                        'log');
+                        }, 360 * bootMsgs.length + 300);
+                        window.addEventListener('resize', function() {
+                                if ($('#preview').classList
+                                        .contains('on'))
+                                        fitCanvas();
+                        });
+                </script>
+        </body>
+
+</html>
